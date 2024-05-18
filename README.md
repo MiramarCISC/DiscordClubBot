@@ -29,3 +29,13 @@ mvn clean install spring-boot:repackage
 java -jar target/DiscordClubBot-0.0.1-SNAPSHOT.jar
 
 Or using IntelliJ, just press the green Play button next to DiscordClubBotApplication.main()
+
+# Version control
+- Use [gitflow](https://jeffkreeftmeijer.com/git-flow/)
+- Git branches:
+  - master - mainline stable branch, latest released production code
+  - hotfixes/HOTFIX_NAME - branched from master, contains fix for production code
+  - development - mainline stable branch, latest development code
+  - features/FEATURE_NAME - branched from development, brand new feature
+  - releases/VERSION - working branch to merge release code, typically development onto master
+  - tags/VERSION - stable release candidate for production
