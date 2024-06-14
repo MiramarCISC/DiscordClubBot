@@ -39,3 +39,17 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
   - features/FEATURE_NAME - branched from development, brand new feature
   - releases/VERSION - working branch to merge release code, typically development onto master
   - tags/VERSION - stable release candidate for production
+
+# Adding a new feature
+1. Clone this repo.
+2. Fetch all remotes.
+3. Update local development.
+4. Checkout feature/branch from development.
+5. Add new classes to model:
+   1. nouns = classes
+   2. attributes = member variables
+   3. verbs = methods
+6. Create JPA repositories for any new classes
+7. Create Spring service that performs actions (create/read/update/delete objects of your classes)
+8. Add message listener(s) that calls the Spring services
+9. Commit 
