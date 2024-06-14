@@ -46,10 +46,19 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
 3. Update local development.
 4. Checkout feature/branch from development.
 5. Add new classes to model:
-   1. nouns = classes
-   2. attributes = member variables
-   3. verbs = methods
+    1. nouns = classes
+    2. attributes = member variables
+    3. verbs = methods
 6. Create JPA repositories for any new classes
 7. Create Spring service that performs actions (create/read/update/delete objects of your classes)
 8. Add message listener(s) that calls the Spring services
-9. Commit 
+9. Commit your changes.
+10. Push your changes.
+11. Create a pull request onto development.
+
+# Code syntax standards
+1. camelCase classes and variables
+2. Capitalize class names
+3. lowercase first letter of object names
+4. Singular class names
+5. Plural database table names
