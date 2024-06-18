@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.commands;
+package club.sdcs.discordbot.discord.commands.prefix;
 
 
 import club.sdcs.discordbot.model.Agenda;
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
-public class AgendaCommand implements Command {
+public class AgendaCommand implements PrefixCommand {
     private final AgendaService agendaService;
 
     public AgendaCommand(AgendaService agendaService) {
@@ -33,7 +33,7 @@ public class AgendaCommand implements Command {
         List<Agenda> agendas = agendaService.getAllAgendas();
         StringBuilder agendaList = new StringBuilder();
         for (Agenda agenda : agendas) {
-            agendaList.append(agenda.getLink()).append("\n");
+            agendaList.append(agenda.getUrl()).append("\n");
         }
         return agendaList.toString();
     }

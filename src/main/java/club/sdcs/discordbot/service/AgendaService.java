@@ -43,15 +43,21 @@ public class AgendaService {
         List<User> users = userRepository.findAll(); // TODO: Change later to permitted roles (officers)
         LocalDateTime currentTime = LocalDateTime.now();
 
+
         for (Agenda agenda : agendas) {
+            String message = "Reminder: The agenda for " + agenda.getTitle() + " is due on " + agenda.getDueDate();
             if (agenda.getDueDate().isEqual(currentTime.plusDays(1))) {
                 for (User user : users) {
-                    discordClient.getUserById(Snowflake.of(user.getDiscordId()))
-                            .flatMap(discord4j.core.object.entity.User::getPrivateChannel)
-                            .flatMap(channel -> channel.createMessage("Reminder: The agenda for " + agenda.getTitle() + " is due on " + agenda.getDueDate()))
-                            .subscribe();
+                    sendDM(user, message);
                 }
             }
         }
+    }
+
+    public void sendDM(User user, String message) {
+        discordClient.getUserById(Snowflake.of(user.getDiscordId()))
+                .flatMap(discord4j.core.object.entity.User::getPrivateChannel)
+                .flatMap(channel -> channel.createMessage(message))
+                .subscribe();
     }
 }
