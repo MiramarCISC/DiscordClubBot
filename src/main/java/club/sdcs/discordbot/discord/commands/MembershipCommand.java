@@ -1,13 +1,19 @@
 package club.sdcs.discordbot.discord.commands;
 
 import club.sdcs.discordbot.service.UserService;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.User;
+import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Button;
+import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
+import discord4j.rest.util.Color;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.swing.*;
+
 @Component
-public class MembershipCommand implements Command {
+public class MembershipCommand implements SlashCommand {
 
     private final UserService userService;
 
@@ -17,26 +23,25 @@ public class MembershipCommand implements Command {
 
     @Override
     public String getName() {
-        return "!membership";
+        return "membership";
     } //end getName()
 
     @Override
-    public Mono<Void> handle(Message message) {
-        User user = message.getAuthor().orElse(null);
-        if (user != null) {
-            return user.getPrivateChannel()
-                    .flatMap(channel -> channel.createMessage("Apply for Membership to SDCS Club? [Y] / [N]"))
-                    .then(handleUserResponse(user));
-        }
+    public Mono<Void> handle(ChatInputInteractionEvent event) {
+        Button registrationButton = Button.primary("start_registration", "Start Registration");
+        ActionRow actionRow = ActionRow.of(registrationButton);
 
-        return Mono.empty();
+        return event.reply(InteractionApplicationCommandCallbackSpec.builder()
+                .addEmbed(createMembershipEmbed())
+                .addComponent(actionRow)
+                .build());
     } //end handle()
 
-    private Mono<Void> handleUserResponse(User user) {
-        // TODO: register members including name, student ID, campus email, phone number for sms,
-        // requesting to be active, requesting to be voting member, ability to unsubscribe from emails and sms
-        // also record discordId to map people to their discord users
-
-        return Mono.empty();
-    } //end createMembershipApplication()
+    private EmbedCreateSpec createMembershipEmbed() {
+        return EmbedCreateSpec.builder()
+                .color(Color.SUMMER_SKY)
+                .title("SDCS Club Membership Registration")
+                .description("Click the button below to start the registration process.")
+                .build();
+    } //end createMembershipEmbed()
 }

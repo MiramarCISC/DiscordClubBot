@@ -1,9 +1,11 @@
 package club.sdcs.discordbot.config;
 
 import club.sdcs.discordbot.discord.EventListener;
+import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
+import discord4j.discordjson.json.ApplicationCommandRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,23 @@ public class DiscordClient {
                     .onErrorResume(listener::handleError)
                     .subscribe();
         }
+
+        //Register all slash commands created
+        if (client != null) {
+
+            long guildId = 1252368620047044648L;
+            Snowflake guildSnowflake = Snowflake.of(guildId);
+
+            ApplicationCommandRequest membershipCommandRequest = ApplicationCommandRequest.builder()
+                    .name("membership")
+                    .description("Register for SDCS Club membership")
+                    .build();
+
+            client.getRestClient().getApplicationService()
+                    .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), membershipCommandRequest)
+                    .subscribe();
+        }
+
         return client;
     }
 }
