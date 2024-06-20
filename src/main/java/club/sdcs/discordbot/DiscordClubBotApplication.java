@@ -21,7 +21,7 @@ public class DiscordClubBotApplication {
     @Bean
     public CommandLineRunner startBot(UserService userService) {
         return(args) -> {
-            long discordId = 511636292728258580L; // change to your Discord ID or agendaService.sendReminders() will DM me
+            long discordId = 341721074813108225L; // change to your Discord ID or agendaService.sendReminders() will DM me
             User user = userService.addUser(new User(discordId, 5394384L, "Andrew Huang", "andrew_huang", "ahuang@sdccd.edu", 3104398858L, Timestamp.valueOf("2022-08-08 00:00:00"), true, true, User.Role.ADVISOR));
 
         };
