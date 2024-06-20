@@ -23,8 +23,6 @@ public class ButtonListener {
 
             case "start_registration":
                 return event.reply("You have started the registration process. See your direct messages for further detail.")
-                        .then(event.getInteraction().getUser().getPrivateChannel())
-                        .flatMap(channel -> channel.createMessage("Please enter your name to proceed."))
                         .then();
 
             default:
