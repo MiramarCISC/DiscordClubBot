@@ -1,15 +1,17 @@
 package club.sdcs.discordbot.discord;
 
+import club.sdcs.discordbot.service.UserService;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.ComponentInteractionEvent;
+import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
 public class ButtonListener {
 
-    public ButtonListener(GatewayDiscordClient client) {
+    public ButtonListener(GatewayDiscordClient client, UserService userService) {
         client.on(ButtonInteractionEvent.class, this::handleButton).subscribe();
     } //end constructor
 
@@ -20,11 +22,10 @@ public class ButtonListener {
         switch (customId) {
 
             case "start_registration":
-                // TODO: receive user information (name, ID, campus email, phone number) and save to repo
-                // TODO: request user to be active, voting member
-                // TODO: ability to unsubcribe from emails and sms
-                // TODO: record discord ID to map people to discord users
-                return event.reply("You have started the registration process. See your direct messages for further detail.");
+                return event.reply("You have started the registration process. See your direct messages for further detail.")
+                        .then(event.getInteraction().getUser().getPrivateChannel())
+                        .flatMap(channel -> channel.createMessage("Please enter your name to proceed."))
+                        .then();
 
             default:
                 return Mono.empty();

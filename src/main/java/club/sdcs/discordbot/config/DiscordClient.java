@@ -45,6 +45,7 @@ public class DiscordClient {
         //Register all slash commands created
         if (client != null) {
 
+            //change to needed discord server ID
             long guildId = 1252368620047044648L;
             Snowflake guildSnowflake = Snowflake.of(guildId);
 
