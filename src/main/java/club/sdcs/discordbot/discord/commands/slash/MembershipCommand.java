@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.commands;
+package club.sdcs.discordbot.discord.commands.slash;
 
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
@@ -9,8 +9,6 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.rest.util.Color;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import javax.swing.*;
 
 @Component
 public class MembershipCommand implements SlashCommand {

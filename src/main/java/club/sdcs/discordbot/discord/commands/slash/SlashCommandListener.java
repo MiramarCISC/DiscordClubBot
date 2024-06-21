@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.commands;
+package club.sdcs.discordbot.discord.commands.slash;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
