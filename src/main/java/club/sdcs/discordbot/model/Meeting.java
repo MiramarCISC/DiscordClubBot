@@ -1,7 +1,7 @@
 package club.sdcs.discordbot.model;
 
 import jakarta.persistence.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="meeting")
@@ -18,8 +18,8 @@ public class Meeting {
     private String name;
     private String description;
     private String location;
-    private LocalTime timeStart;
-    private LocalTime timeEnd;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String agendaLink;
     private String minutesLink;
     private boolean isQuorumMet;
@@ -29,13 +29,13 @@ public class Meeting {
 
     public Meeting() {}
 
-    public Meeting(long meetingId, String name, String description, String location, LocalTime timeStart, LocalTime timeEnd, String agendaLink, String minutesLink, boolean isQuorumMet, Status status) {
+    public Meeting(long meetingId, String name, String description, String location, LocalDateTime startTime, LocalDateTime endTime, String agendaLink, String minutesLink, boolean isQuorumMet, Status status) {
         this.meetingId = meetingId;
         this.name = name;
         this.description = description;
         this.location = location;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.agendaLink = agendaLink;
         this.minutesLink = minutesLink;
         this.isQuorumMet = isQuorumMet;
@@ -58,20 +58,20 @@ public class Meeting {
         this.description = description;
     }
 
-    public LocalTime getTimeStart() {
-        return timeStart;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setTimeStart(LocalTime timeStart) {
-        this.timeStart = timeStart;
+    public void setStartTime(LocalDateTime timeStart) {
+        this.startTime = timeStart;
     }
 
-    public LocalTime getTimeEnd() {
-        return timeEnd;
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
-    public void setTimeEnd(LocalTime timeEnd) {
-        this.timeEnd = timeEnd;
+    public void setEndTime(LocalDateTime timeEnd) {
+        this.endTime = timeEnd;
     }
 
     public String getAgendaLink() {
@@ -142,8 +142,8 @@ public class Meeting {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
-                ", timeStart=" + timeStart +
-                ", timeEnd=" + timeEnd +
+                ", timeStart=" + startTime +
+                ", timeEnd=" + endTime +
                 ", agendaLink='" + agendaLink + '\'' +
                 ", minutesLink='" + minutesLink + '\'' +
                 ", isQuorumMet=" + isQuorumMet +

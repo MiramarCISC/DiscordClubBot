@@ -33,8 +33,8 @@ public class MeetingCommand implements SlashCommand {
                     meeting.getName(),
                     meeting.getDescription(),
                     meeting.getLocation(),
-                    meeting.getTimeStart(),
-                    meeting.getTimeEnd() != null ? meeting.getTimeEnd() : "No end time",
+                    meeting.getStartTime(),
+                    meeting.getEndTime() != null ? meeting.getEndTime() : "No end time",
                     meeting.getAgendaLink()));
         }
 
