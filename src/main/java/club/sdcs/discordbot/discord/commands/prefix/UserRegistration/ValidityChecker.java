@@ -43,8 +43,11 @@ public class ValidityChecker {
      * @return the validity of the district ID sent
      */
     public boolean checkDistrictIDValidity(String[] content) {
-        String districtID = content[2];
+        if (content.length != 3) {
+            return false;
+        }
 
+        String districtID = content[2];
         // valid district ID if is all numeric and is 10 digits long
         return districtID.matches("\\d{10}");
     } //end checkDistrictIDValidity()

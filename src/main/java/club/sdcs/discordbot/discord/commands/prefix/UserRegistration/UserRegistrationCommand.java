@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class UserRegistrationCommand implements PrefixCommand {
 
-    // TODO: request user to be active/voting member
+    // TODO: make user registration command only reachable during the registration process
     // TODO: ability to unsubscribe from emails and sms
     // TODO: save user to user repository
 
@@ -48,6 +48,7 @@ public class UserRegistrationCommand implements PrefixCommand {
                         case "setphonenumber" -> informationProcessor.processPhone(message, content, user);
                         case "confirm" -> informationProcessor.confirmUserDetails(message, user);
                         case "edit" -> informationProcessor.editUserDetails(message, content, user);
+                        case "request" -> informationProcessor.assignRoleToUser(message, content, user);
                         default -> channel.createMessage("I did not recognize that command. Ensure that you typed the command as stated.");
                     }; //end switch case
 
