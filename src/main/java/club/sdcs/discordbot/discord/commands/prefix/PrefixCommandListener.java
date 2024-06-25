@@ -1,7 +1,5 @@
 package club.sdcs.discordbot.discord.commands.prefix;
 
-
-
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;

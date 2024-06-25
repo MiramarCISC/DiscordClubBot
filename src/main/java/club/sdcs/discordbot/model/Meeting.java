@@ -1,11 +1,13 @@
 package club.sdcs.discordbot.model;
 
+import discord4j.core.spec.EmbedCreateSpec;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name="meeting")
-public class Meeting {
+public class Meeting extends Auditable {
 
     public enum Status {
         SCHEDULED,
@@ -150,4 +152,34 @@ public class Meeting {
                 ", status=" + status +
                 '}';
     }
+
+    public EmbedCreateSpec toDiscordFormatEmbed() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        EmbedCreateSpec.Builder builder = EmbedCreateSpec.builder()
+                .title("Meeting Details")
+                .addField("Name", name, true)
+                .addField("Description", description, true)
+                .addField("Location", location, true);
+
+        if (startTime != null) {
+            builder.addField("Start Time", startTime.format(formatter), true);
+        } else {
+            builder.addField("Start Time", "N/A", true); // or handle differently based on your needs
+        }
+
+        if (endTime != null) {
+            builder.addField("End Time", endTime.format(formatter), true);
+        } else {
+            builder.addField("End Time", "N/A", true); // or handle differently based on your needs
+        }
+
+        builder.addField("Agenda Link", agendaLink != null ? agendaLink : "N/A", false)
+                .addField("Minutes Link", minutesLink != null ? minutesLink : "N/A", false)
+                .addField("Status", String.valueOf(status), true)
+                .addField("Quorum Met", isQuorumMet ? "Yes" : "No", true);
+
+        return builder.build();
+    }
+
 }

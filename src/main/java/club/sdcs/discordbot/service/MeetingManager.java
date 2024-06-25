@@ -15,14 +15,13 @@ public class MeetingManager {
     private final MeetingService meetingService;
     private final UserService userService;
 
-
     public MeetingManager(MeetingService meetingService, GatewayDiscordClient client, UserService userService) {
         this.meetingService = meetingService;
         this.client = client;
         this.userService = userService;
     }
 
-    @Scheduled(fixedRate = 7200000) // every 2 hours
+    @Scheduled(fixedRateString = "${spring.scheduling.fixedRate}") // every 2 hours
     public void checkMeetings() {
         List<Meeting> meetings = meetingService.getAllMeetings();
         LocalDateTime now = LocalDateTime.now();
@@ -35,11 +34,13 @@ public class MeetingManager {
         }
     }
 
-    @Scheduled(cron = "0 0 8 * * ?")
-    public void remindAgendaDue() {}
+    @Scheduled(cron = "${spring.scheduling.cron}")
+    public void remindAgendaDue() {
+    }
 
-    @Scheduled(cron = "0 0 8 * * ?")
-    public void remindMinutesDue() {}
+    @Scheduled(cron = "${spring.scheduling.cron}")
+    public void remindMinutesDue() {
+    }
 
     private void sendDMReminder(Meeting meeting, List<User> users) {
         for (User user : users) {
@@ -51,5 +52,6 @@ public class MeetingManager {
         }
     }
 
-    private void sendChannelReminder(String channelId) {}
+    private void sendChannelReminder(String channelId) {
+    }
 }

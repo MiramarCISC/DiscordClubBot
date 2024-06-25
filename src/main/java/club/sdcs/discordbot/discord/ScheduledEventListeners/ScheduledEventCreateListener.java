@@ -1,11 +1,13 @@
-package club.sdcs.discordbot.discord;
+package club.sdcs.discordbot.discord.ScheduledEventListeners;
 
+import club.sdcs.discordbot.discord.EventListener;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.service.MeetingService;
 import discord4j.core.event.domain.guild.ScheduledEventCreateEvent;
 import discord4j.core.object.entity.ScheduledEvent;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.common.util.Snowflake;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
@@ -14,8 +16,11 @@ import java.time.ZoneId;
 @Component
 public class ScheduledEventCreateListener implements EventListener<ScheduledEventCreateEvent> {
     private final MeetingService meetingService;
-    private final String CHANNEL_ID = "1209001365234393091"; // Set announcement channel ID here
-    private final String ZONE_ID = "America/Los_Angeles";
+
+    @Value("${spring.discord.officer-channel-id}")
+    private String CHANNEL_ID;
+    @Value("${spring.discord.zone-id}")
+    private String ZONE_ID;
 
     public ScheduledEventCreateListener(MeetingService meetingService) {
         this.meetingService = meetingService;
@@ -53,7 +58,12 @@ public class ScheduledEventCreateListener implements EventListener<ScheduledEven
         return event.getGuild()
                 .flatMap(guild -> guild.getChannelById(Snowflake.of(CHANNEL_ID))
                         .ofType(MessageChannel.class))
-                .flatMap(channel -> channel.createMessage(meeting.toString())) // TODO: return more refined string/message
+                .flatMap(channel -> channel.createMessage(meeting.toDiscordFormatEmbed()))
                 .then();
+    }
+
+    @Override
+    public Mono<Void> handleError(Throwable error) {
+        return EventListener.super.handleError(error);
     }
 }
