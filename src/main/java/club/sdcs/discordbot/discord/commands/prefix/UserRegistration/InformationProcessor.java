@@ -222,6 +222,9 @@ public class InformationProcessor {
         user.setDiscordId(message.getAuthor().get().getId().asLong());
 
         //TODO: save user to repository
+        UserRegistrationCommand.userService.addUser(user);
+
+        UserRegistrationCommand.registration_status = true;
 
         return Mono.just(message)
                 .flatMap(Message::getChannel)

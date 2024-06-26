@@ -15,8 +15,10 @@ public class UserRegistrationCommand implements PrefixCommand {
     // TODO: ability to unsubscribe from emails and sms
     // TODO: save user to user repository
 
-    private final UserService userService;
+    public static UserService userService;
     private final User user = new User();
+
+    public static boolean registration_status = false;
 
     public UserRegistrationCommand(UserService userService) {
         this.userService = userService;
@@ -41,16 +43,21 @@ public class UserRegistrationCommand implements PrefixCommand {
                     String userInfo = content[1]; //takes in what the information the user is setting
 
                     //check which user info is being set and save that user information
-                    return switch (userInfo.toLowerCase()) {
-                        case "setname" -> informationProcessor.processName(message, content, user);
-                        case "setemail" -> informationProcessor.processEmail(message, content, user);
-                        case "setdistrictid" -> informationProcessor.processDistrictID(message, content, user);
-                        case "setphonenumber" -> informationProcessor.processPhone(message, content, user);
-                        case "confirm" -> informationProcessor.confirmUserDetails(message, user);
-                        case "edit" -> informationProcessor.editUserDetails(message, content, user);
-                        case "request" -> informationProcessor.assignRoleToUser(message, content, user);
-                        default -> channel.createMessage("I did not recognize that command. Ensure that you typed the command as stated.");
-                    }; //end switch case
+                    if (!registration_status) {
+                        return switch (userInfo.toLowerCase()) {
+                            case "setname" -> informationProcessor.processName(message, content, user);
+                            case "setemail" -> informationProcessor.processEmail(message, content, user);
+                            case "setdistrictid" -> informationProcessor.processDistrictID(message, content, user);
+                            case "setphonenumber" -> informationProcessor.processPhone(message, content, user);
+                            case "confirm" -> informationProcessor.confirmUserDetails(message, user);
+                            case "edit" -> informationProcessor.editUserDetails(message, content, user);
+                            case "request" -> informationProcessor.assignRoleToUser(message, content, user);
+                            default ->
+                                    channel.createMessage("I did not recognize that command. Ensure that you typed the command as stated.");
+                        }; //end switch case
+                    } else {
+                        return Mono.empty();
+                    }
 
                 }) //end .flatMap()
                 .then(); //end return statement
