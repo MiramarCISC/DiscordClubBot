@@ -1,6 +1,10 @@
 package club.sdcs.discordbot.model;
 
+import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Button;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.MessageCreateSpec;
+import discord4j.rest.util.Color;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -153,33 +157,39 @@ public class Meeting extends Auditable {
                 '}';
     }
 
-    public EmbedCreateSpec toDiscordFormatEmbed() {
+    private EmbedCreateSpec.Builder createEmbedBuilder() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        EmbedCreateSpec.Builder builder = EmbedCreateSpec.builder()
+        Color embedColor = (status == Status.ACTIVE) ? Color.GREEN : Color.GRAY;
+
+        return EmbedCreateSpec.builder()
                 .title("Meeting Details")
+                .color(embedColor)
                 .addField("Name", name, true)
                 .addField("Description", description, true)
-                .addField("Location", location, true);
-
-        if (startTime != null) {
-            builder.addField("Start Time", startTime.format(formatter), true);
-        } else {
-            builder.addField("Start Time", "N/A", true); // or handle differently based on your needs
-        }
-
-        if (endTime != null) {
-            builder.addField("End Time", endTime.format(formatter), true);
-        } else {
-            builder.addField("End Time", "N/A", true); // or handle differently based on your needs
-        }
-
-        builder.addField("Agenda Link", agendaLink != null ? agendaLink : "N/A", false)
+                .addField("Location", location, true)
+                .addField("Start Time", startTime != null ? startTime.format(formatter) : "N/A", true)
+                .addField("End Time", endTime != null ? endTime.format(formatter) : "N/A", true)
+                .addField("Agenda Link", agendaLink != null ? agendaLink : "N/A", false)
                 .addField("Minutes Link", minutesLink != null ? minutesLink : "N/A", false)
                 .addField("Status", String.valueOf(status), true)
                 .addField("Quorum Met", isQuorumMet ? "Yes" : "No", true);
-
-        return builder.build();
     }
 
+    // Text only message
+    public EmbedCreateSpec toDiscordFormatEmbed() {
+        return createEmbedBuilder().build();
+    }
+
+    // Allows Discord buttons/interactions
+    public MessageCreateSpec toDiscordFormatMessage() {
+        EmbedCreateSpec embed = createEmbedBuilder().build();
+
+        return MessageCreateSpec.builder()
+                .addEmbed(embed)
+                .addComponent(ActionRow.of(Button.primary("agendaLink-button-" + meetingId, "input agenda link"),
+                        Button.primary("minutesLink-button-" + meetingId, "input minutes link")))
+
+                .build();
+    }
 }

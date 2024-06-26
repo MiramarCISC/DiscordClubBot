@@ -3,17 +3,15 @@ package club.sdcs.discordbot.discord.commands.prefix;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.service.MeetingService;
 import discord4j.core.object.entity.Message;
-import discord4j.core.spec.MessageCreateSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class MeetingListCommand implements PrefixCommand {
-    private MeetingService meetingService;
+    private final MeetingService meetingService;
 
     public MeetingListCommand(MeetingService meetingService) {
         this.meetingService = meetingService;
@@ -29,10 +27,14 @@ public class MeetingListCommand implements PrefixCommand {
         List<Meeting.Status> statuses = Arrays.asList(Meeting.Status.ACTIVE, Meeting.Status.SCHEDULED);
         List<Meeting> meetings = meetingService.getMeetingsByStatuses(statuses);
         return message.getChannel()
-                .flatMapMany(channel -> Flux.fromIterable(meetings)
-                        .flatMap(meeting -> channel.createMessage(MessageCreateSpec.builder()
-                                .addEmbed(meeting.toDiscordFormatEmbed())
-                                .build())))
-                .then();
+                .flatMap(channel -> {
+                    if (meetings.isEmpty()) {
+                        return channel.createMessage("No active or scheduled meetings.");
+                    } else {
+                        return Flux.fromIterable(meetings)
+                                .flatMap(meeting -> channel.createMessage(meeting.toDiscordFormatMessage()))
+                                .then();
+                    }
+                }).then();
     }
 }
