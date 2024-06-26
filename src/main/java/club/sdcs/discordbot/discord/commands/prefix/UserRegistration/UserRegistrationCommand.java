@@ -3,7 +3,6 @@ package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
-import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import org.springframework.stereotype.Component;

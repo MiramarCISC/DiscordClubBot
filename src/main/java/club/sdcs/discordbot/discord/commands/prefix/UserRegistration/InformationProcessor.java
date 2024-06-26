@@ -1,9 +1,15 @@
 package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 
+import club.sdcs.discordbot.discord.EmbedUtils;
 import club.sdcs.discordbot.model.User;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Message;
+import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.GuildMemberEditSpec;
+import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
 public class InformationProcessor {
@@ -22,11 +28,12 @@ public class InformationProcessor {
             String lastName = eventMessage[3];
             user.setFullName(firstName + " " + lastName);
 
-            return Mono.just(message)
-                    .flatMap(Message::getChannel)
-                    .flatMap(messageChannel -> messageChannel.createMessage("Name received. Your name is set to **" +
-                            firstName + " " + lastName + "**.\n\nFor the next step, please enter in your **campus** email. (**!user setEmail [email]**)"))
-                    .then();
+            String description = "Your name is set to **" + firstName + " " + lastName + "**.\n\n" +
+                    "**Next Step:**\n" +
+                    "Please enter your **campus email** using the command:\n" +
+                    "`!user setEmail [email]`";
+
+            return EmbedUtils.createEmbedMessage(message, "Name Received", description);
         }
 
         return createErrorMessage(message);
@@ -43,11 +50,12 @@ public class InformationProcessor {
             String email = eventMessage[2];
             user.setEmail(email);
 
-            return Mono.just(message)
-                    .flatMap(Message::getChannel)
-                    .flatMap(messageChannel -> messageChannel.createMessage("Campus email received. Your email is set to **" +
-                            email + "**.\n\nFor the next step, please enter in your **district ID**. (**!user setDistrictID [districtID]**)"))
-                    .then();
+            String description = "Your email is set to **" + email + "**.\n\n" +
+                    "**Next Step:**\n" +
+                    "Please enter your **district ID** using the command:\n" +
+                    "`!user setDistrictID [districtID]`";
+
+            return EmbedUtils.createEmbedMessage(message, "Email Received", description);
         }
 
         return createErrorMessage(message);
@@ -64,11 +72,13 @@ public class InformationProcessor {
             long districtID = Long.parseLong(eventMessage[2]);
             user.setDistrictId(districtID);
 
-            return Mono.just(message)
-                    .flatMap(Message::getChannel)
-                    .flatMap(messageChannel -> messageChannel.createMessage("District ID received. Your district ID is set to **" +
-                            districtID + "**.\n\nFor the next step, please enter in your **phone number** (no dashes [-]). (**!user setPhoneNumber [phonenumber]**)"))
-                    .then();
+            String description = "Your district ID is set to **" + districtID + "**.\n\n" +
+                    "**Next Step:**\n" +
+                    "Please enter your **phone number** (no dashes) using the command:\n" +
+                    "`!user setPhoneNumber [phone number]`";
+
+            return EmbedUtils.createEmbedMessage(message, "District ID Received", description);
+
         }
 
         return createErrorMessage(message);
@@ -85,14 +95,19 @@ public class InformationProcessor {
             long phone = Long.parseLong(eventMessage[2]);
             user.setMobileNumber(phone);
 
-            return Mono.just(message)
-                    .flatMap(Message::getChannel)
-                    .flatMap(messageChannel -> messageChannel.createMessage("Phone number received. Your phone number is set to **" +
-                            phone + "**.\n\nAs the last step of the registration process, would you like to become an **active** member of the club?" +
-                            "\nThis means that you will participate in a meeting at least once a month and have the ability to vote for officers of the club." +
-                            "\nIf this interests you, use the command '**!user request active**' to become an **active** member of the club." +
-                            "\nOtherwise, use the command '**!user request inactive**' to still become a member of the club but **inactive**."))
-                    .then();
+            String description = "Your phone number is set to **" + phone + "**.\n\n" +
+                    "**As the last step of the registration process, please indicate your membership status:** " +
+                    "Become an **active** member of the club?\n\n" +
+                    "**Active Membership Requirements & Benefits:**\n" +
+                    "- Participate in a meeting at least once a month\n" +
+                    "- Ability to vote for officers of the club\n\n" +
+                    "If this interests you, use the command:\n" +
+                    "`!user request active` to become an **active** member of the club.\n\n" +
+                    "Otherwise, use the command:\n" +
+                    "`!user request inactive` to become an **inactive** member of the club.";
+
+            return EmbedUtils.createEmbedMessage(message, "Phone Number Received", description);
+
         }
 
         return createErrorMessage(message);
@@ -127,10 +142,8 @@ public class InformationProcessor {
 
 
         } else {
-            return Mono.just(message)
-                    .flatMap(Message::getChannel)
-                    .flatMap(channel -> channel.createMessage("I did not recognize that role. Refer to the instructions given previously."))
-                    .then();
+            return EmbedUtils.createEmbedMessage(message, "Invalid Role", "I did not recognize that role. Refer to the instructions given previously.");
+
         }
 
     } //end assignRoleToUser()
@@ -142,17 +155,15 @@ public class InformationProcessor {
      * @return confirmation message
      */
     private Mono<Void> askConfirmation(Message message, User user) {
-        String confirmationMessage = "\nName: " + user.getFullName() +
-                "\nEmail: **" + user.getEmail() +
+        String confirmationMessage = "\nName: **" + user.getFullName() +
+                "**\nEmail: **" + user.getEmail() +
                 "**\nDistrict ID: **" + user.getDistrictId() +
                 "**\nPhone number: **" + user.getMobileNumber() +
                 "**\nRole Assigned: **" + user.getRole() +
-                "**\n\nType '**!user confirm**' to confirm this user information or '**!user edit [field] [information]**' to edit a specific field.";
+                "**\n\nType `!user confirm` to **confirm** this user information.\nType `!user edit [field] [information]` to **edit** a specific field before finalizing.";
 
-        return Mono.just(message)
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage(confirmationMessage))
-                .then();
+        return EmbedUtils.createEmbedMessage(message, "Confirm Your Details", confirmationMessage);
+
     } //end askConfirmation()
 
     /**
@@ -198,16 +209,12 @@ public class InformationProcessor {
                 }
             }
             default -> {
-                return Mono.just(message)
-                        .flatMap(Message::getChannel)
-                        .flatMap(channel -> channel.createMessage("I did not recognize that command. Ensure that you typed the command as stated and the information is valid."))
-                        .then();
+                return EmbedUtils.createEmbedMessage(message, "Invalid Command", "I did not recognize that command. Ensure that you typed the command as **stated** and the information is **valid**.");
+
             }
         } //end switch case
 
-        return Mono.just(message)
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("Field information updated. Please confirm your information again."))
+        return EmbedUtils.createEmbedMessage(message, "Field Information Updated", "Field information updated. Please **confirm** your information again.")
                 .then(askConfirmation(message, user));
     } //end editUserDetails()
 
@@ -218,18 +225,17 @@ public class InformationProcessor {
      * @return bot message
      */
     public Mono<Void> confirmUserDetails(Message message, User user) {
-        //to finalize, set user's discord ID and finished registered status
+        //to finalize, set user's discord ID, join date, and finished registered status
         user.setDiscordId(message.getAuthor().get().getId().asLong());
+        user.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         user.setStatus(User.Status.REGISTERED);
-        UserRegistrationCommand.userService.addUser(user);
 
+        UserRegistrationCommand.userService.addUser(user);
         UserRegistrationCommand.registration_mode = false;
 
-        return Mono.just(message)
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("\nYour details have been confirmed and saved!" +
-                        "\nThat concludes the membership registration process. Thank you for joining the Miramar SDCS Club!"))
-                .then();
+        return EmbedUtils.createEmbedMessage(message, "Registration Complete", "\nYour details have been **confirmed** and **saved!**" +
+                "\n\nThat concludes the membership registration process.\nThank you for joining the **Miramar SDCS Club!**");
+
     } //end confirmUserDetails()
 
     /**
@@ -239,11 +245,10 @@ public class InformationProcessor {
      */
     private Mono<Void> createErrorMessage(Message message) {
 
-        return Mono.just(message)
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("The information you just provided was not in the correct format or was invalid." +
-                        "\nPlease refer to the command above for the proper format and try again."))
-                .then();
+        return EmbedUtils.createEmbedMessage(message, "Error Received", "The information you just provided was not in the correct format or was invalid." +
+                "\nPlease refer to the command above for the proper format and try again.");
 
     } //end createErrorMessage()
+
+
 }
