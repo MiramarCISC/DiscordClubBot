@@ -218,13 +218,12 @@ public class InformationProcessor {
      * @return bot message
      */
     public Mono<Void> confirmUserDetails(Message message, User user) {
-        //to finalize, set user's discord ID
+        //to finalize, set user's discord ID and finished registered status
         user.setDiscordId(message.getAuthor().get().getId().asLong());
-
-        //TODO: save user to repository
+        user.setStatus(User.Status.REGISTERED);
         UserRegistrationCommand.userService.addUser(user);
 
-        UserRegistrationCommand.registration_status = true;
+        UserRegistrationCommand.registration_mode = false;
 
         return Mono.just(message)
                 .flatMap(Message::getChannel)

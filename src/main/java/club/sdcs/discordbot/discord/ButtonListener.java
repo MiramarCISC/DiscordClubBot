@@ -1,5 +1,6 @@
 package club.sdcs.discordbot.discord;
 
+import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.UserRegistrationCommand;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
@@ -22,6 +23,8 @@ public class ButtonListener {
         switch (customId) {
 
             case "start_registration":
+                UserRegistrationCommand.registration_mode = true;
+
                 return event.reply("You have started the registration process. See your direct messages for further detail.")
                         .then(event.getInteraction().getUser().getPrivateChannel())
                         .flatMap(privateChannel -> privateChannel.createMessage("Please enter in your name to begin the registration process. (**!user setName [first name] [last name]**)"))

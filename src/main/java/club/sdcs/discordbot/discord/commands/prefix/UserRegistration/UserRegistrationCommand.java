@@ -3,6 +3,7 @@ package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
+import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import org.springframework.stereotype.Component;
@@ -11,17 +12,15 @@ import reactor.core.publisher.Mono;
 @Component
 public class UserRegistrationCommand implements PrefixCommand {
 
-    // TODO: make user registration command only reachable during the registration process
     // TODO: ability to unsubscribe from emails and sms
-    // TODO: save user to user repository
 
     public static UserService userService;
     private final User user = new User();
 
-    public static boolean registration_status = false;
+    public static boolean registration_mode = false;
 
     public UserRegistrationCommand(UserService userService) {
-        this.userService = userService;
+        UserRegistrationCommand.userService = userService;
     }
 
     @Override
@@ -43,7 +42,7 @@ public class UserRegistrationCommand implements PrefixCommand {
                     String userInfo = content[1]; //takes in what the information the user is setting
 
                     //check which user info is being set and save that user information
-                    if (!registration_status) {
+                    if (registration_mode) {
                         return switch (userInfo.toLowerCase()) {
                             case "setname" -> informationProcessor.processName(message, content, user);
                             case "setemail" -> informationProcessor.processEmail(message, content, user);

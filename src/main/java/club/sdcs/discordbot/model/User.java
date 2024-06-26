@@ -25,6 +25,12 @@ public class User extends Auditable {
         ALUMNI,     // graduate, non-voting
         ADVISOR     // faculty advisor, non-voting
     }
+
+    public enum Status {
+        UNREGISTERED,
+        REGISTERED
+    }
+
     @Id
     private long discordId;
     private long districtId;
@@ -40,10 +46,11 @@ public class User extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    private Status status;
 
     public User(){}
 
-    public User(long discordId, long districtId, String fullName, String discordName, String email, long mobileNumber, Timestamp joinDate, boolean subscribedToEmails, boolean subscribedToSMS, Role role) {
+    public User(long discordId, long districtId, String fullName, String discordName, String email, long mobileNumber, Timestamp joinDate, boolean subscribedToEmails, boolean subscribedToSMS, Role role, Status status) {
         this.discordId = discordId;
         this.districtId = districtId;
         this.fullName = fullName;
@@ -54,6 +61,7 @@ public class User extends Auditable {
         this.subscribedToEmails = subscribedToEmails;
         this.subscribedToSMS = subscribedToSMS;
         this.role = role;
+        this.status = status;
     }
 
     public long getDiscordId() {
@@ -137,4 +145,8 @@ public class User extends Auditable {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public Status getStatus() { return status; }
+
+    public void setStatus(Status status) { this.status = status; }
 }
