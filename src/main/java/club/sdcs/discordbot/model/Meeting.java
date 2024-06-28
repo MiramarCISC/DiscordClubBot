@@ -68,12 +68,22 @@ public class Meeting extends Auditable {
         return startTime;
     }
 
+    public String getFormatStartTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, MM-dd-yyyy");
+        return startTime.format(formatter);
+    }
+
     public void setStartTime(LocalDateTime timeStart) {
         this.startTime = timeStart;
     }
 
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    public String getFormatEndTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, MM-dd-yyyy");
+        return endTime.format(formatter);
     }
 
     public void setEndTime(LocalDateTime timeEnd) {
@@ -168,8 +178,8 @@ public class Meeting extends Auditable {
                 .addField("Name", name, true)
                 .addField("Description", description, true)
                 .addField("Location", location, true)
-                .addField("Start Time", startTime != null ? startTime.format(formatter) : "N/A", true)
-                .addField("End Time", endTime != null ? endTime.format(formatter) : "N/A", true)
+                .addField("Start Time", startTime != null ? getFormatStartTime() : "N/A", true)
+                .addField("End Time", endTime != null ? getFormatEndTime() : "N/A", true)
                 .addField("Agenda Link", agendaLink != null ? agendaLink : "N/A", false)
                 .addField("Minutes Link", minutesLink != null ? minutesLink : "N/A", false)
                 .addField("Status", String.valueOf(status), true)
@@ -189,7 +199,6 @@ public class Meeting extends Auditable {
                 .addEmbed(embed)
                 .addComponent(ActionRow.of(Button.primary("agendaLink-button-" + meetingId, "input agenda link"),
                         Button.primary("minutesLink-button-" + meetingId, "input minutes link")))
-
                 .build();
     }
 }
