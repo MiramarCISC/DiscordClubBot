@@ -43,8 +43,8 @@ public class InformationProcessor {
      * @return nothing
      */
     public Mono<Void> processEmail(Message message, String[] eventMessage, User user) {
-        if (validityChecker.checkEmailValidity(eventMessage)) {
-            String email = eventMessage[2];
+        String email = eventMessage[2];
+        if (validityChecker.checkEmailValidity(email)) {
             user.setEmail(email);
 
             String description = "Your email is set to **" + email + "**.\n\n" +
@@ -65,9 +65,9 @@ public class InformationProcessor {
      * @return nothing
      */
     public Mono<Void> processDistrictID(Message message, String[] eventMessage, User user) {
-        if (validityChecker.checkDistrictIDValidity(eventMessage)) {
-            long districtID = Long.parseLong(eventMessage[2]);
-            user.setDistrictId(districtID);
+        String districtID = eventMessage[2];
+        if (validityChecker.checkDistrictIDValidity(districtID)) {
+            user.setDistrictId(Long.parseLong(districtID));
 
             String description = "Your district ID is set to **" + districtID + "**.\n\n" +
                     "**Next Step:**\n" +
@@ -88,11 +88,11 @@ public class InformationProcessor {
      * @return nothing
      */
     public Mono<Void> processPhone(Message message, String[] eventMessage, User user) {
-        if (validityChecker.checkPhoneNumberValidity(eventMessage)) {
-            long phone = Long.parseLong(eventMessage[2]);
-            user.setMobileNumber(phone);
+        String phoneNumber = eventMessage[2];
+        if (validityChecker.checkPhoneNumberValidity(phoneNumber)) {
+            user.setMobileNumber(Long.parseLong(phoneNumber));
 
-            String description = "Your phone number is set to **" + phone + "**.\n\n" +
+            String description = "Your phone number is set to **" + phoneNumber + "**.\n\n" +
                     "**As the last step of the registration process, please indicate your membership status:** " +
                     "Become an **active** member of the club?\n\n" +
                     "**Active Membership Requirements & Benefits:**\n" +
@@ -178,28 +178,28 @@ public class InformationProcessor {
         switch (fieldToEdit) {
             case "name" -> {
                 String[] nameParts = newInformation.split(" ");
-                if (nameParts.length == 2 && validityChecker.checkNameValidity(content)) {
+                if (nameParts.length == 3 && validityChecker.checkNameValidity(content)) {
                     user.setFullName(nameParts[0] + " " + nameParts[1]);
                 } else {
                     return createErrorMessage(message);
                 }
             }
             case "email" -> {
-                if (validityChecker.checkEmailValidity(content)) {
+                if (validityChecker.checkEmailValidity(newInformation)) {
                     user.setEmail(newInformation);
                 } else {
                     return createErrorMessage(message);
                 }
             }
             case "districtid" -> {
-                if (validityChecker.checkDistrictIDValidity(content)) {
+                if (validityChecker.checkDistrictIDValidity(newInformation)) {
                     user.setDistrictId(Long.parseLong(newInformation));
                 } else {
                     return createErrorMessage(message);
                 }
             }
             case "phonenumber" -> {
-                if (validityChecker.checkPhoneNumberValidity(content)) {
+                if (validityChecker.checkPhoneNumberValidity(newInformation)) {
                     user.setMobileNumber(Long.parseLong(newInformation));
                 } else {
                     return createErrorMessage(message);
