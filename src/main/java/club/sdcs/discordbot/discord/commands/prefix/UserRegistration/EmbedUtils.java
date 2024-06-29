@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord;
+package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;

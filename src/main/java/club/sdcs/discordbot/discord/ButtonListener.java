@@ -1,18 +1,17 @@
 package club.sdcs.discordbot.discord;
 
+import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.UserRegistrationCommand;
-import club.sdcs.discordbot.service.UserService;
+import club.sdcs.discordbot.model.User;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.event.domain.interaction.ComponentInteractionEvent;
-import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
 public class ButtonListener {
 
-    public ButtonListener(GatewayDiscordClient client, UserService userService) {
+    public ButtonListener(GatewayDiscordClient client) {
         client.on(ButtonInteractionEvent.class, this::handleButton).subscribe();
     } //end constructor
 

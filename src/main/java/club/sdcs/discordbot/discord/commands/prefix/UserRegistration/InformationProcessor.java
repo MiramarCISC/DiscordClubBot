@@ -1,15 +1,12 @@
 package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 
-import club.sdcs.discordbot.discord.EmbedUtils;
 import club.sdcs.discordbot.model.User;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Message;
-import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.GuildMemberEditSpec;
-import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
 public class InformationProcessor {
@@ -225,8 +222,9 @@ public class InformationProcessor {
      * @return bot message
      */
     public Mono<Void> confirmUserDetails(Message message, User user) {
-        //to finalize, set user's discord ID, join date, and finished registered status
+        //to finalize, set user's discord ID/name, join date, and finished registered status
         user.setDiscordId(message.getAuthor().get().getId().asLong());
+        user.setDiscordName(message.getAuthor().get().getUsername());
         user.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         user.setStatus(User.Status.REGISTERED);
 

@@ -1,5 +1,6 @@
 package club.sdcs.discordbot.discord.commands.slash;
 
+import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
@@ -10,14 +11,10 @@ import discord4j.rest.util.Color;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+
 @Component
 public class MembershipCommand implements SlashCommand {
-
-    private final UserService userService;
-
-    public MembershipCommand(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     public String getName() {
