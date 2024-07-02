@@ -9,6 +9,9 @@ spring:
   discord:
     token: ${DISCORD_TOKEN}
     server-id: ${DISCORD_SERVER_ID}
+    officer-channel-id: ${DISCORD_CHANNEL_ID}
+    zone-id: ${ZONE_ID:America/Los_Angeles}
+    scheduling: 0 0 9 * * ?
   h2:
     console:
       enabled: true

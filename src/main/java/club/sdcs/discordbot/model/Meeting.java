@@ -168,18 +168,16 @@ public class Meeting extends Auditable {
     }
 
     private EmbedCreateSpec.Builder createEmbedBuilder() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         Color embedColor = (status == Status.ACTIVE) ? Color.GREEN : Color.GRAY;
+        String startTime = this.startTime != null ? getFormatStartTime() : "N/A" ;
+        String endTime = this.endTime != null ? getFormatEndTime() : "N/A";
 
         return EmbedCreateSpec.builder()
-                .title("Meeting Details")
+                .title(name)
                 .color(embedColor)
-                .addField("Name", name, true)
                 .addField("Description", description, true)
                 .addField("Location", location, true)
-                .addField("Start Time", startTime != null ? getFormatStartTime() : "N/A", true)
-                .addField("End Time", endTime != null ? getFormatEndTime() : "N/A", true)
+                .addField("Time", startTime + " - " + endTime, false)
                 .addField("Agenda Link", agendaLink != null ? agendaLink : "N/A", false)
                 .addField("Minutes Link", minutesLink != null ? minutesLink : "N/A", false)
                 .addField("Status", String.valueOf(status), true)
@@ -197,8 +195,7 @@ public class Meeting extends Auditable {
 
         return MessageCreateSpec.builder()
                 .addEmbed(embed)
-                .addComponent(ActionRow.of(Button.primary("agendaLink-button-" + meetingId, "input agenda link"),
-                        Button.primary("minutesLink-button-" + meetingId, "input minutes link")))
+                .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), "input agenda/minutes link")))
                 .build();
     }
 }

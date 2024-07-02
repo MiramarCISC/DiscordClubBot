@@ -26,7 +26,7 @@ public class MeetingManager {
         this.userService = userService;
     }
 
-    @Scheduled(cron = "${spring.scheduling.cron}") // every day
+    @Scheduled(cron = "${spring.discord.scheduling}") // every day
     public void checkMeetings() {
         List<Meeting.Status> statuses = List.of(Meeting.Status.SCHEDULED);
         List<Meeting> scheduledMeetings = meetingService.getMeetingsByStatuses(statuses);
@@ -37,8 +37,8 @@ public class MeetingManager {
             LocalDateTime meetingStartTime = meeting.getStartTime();
             String reminderMsg = reminderMessage(meeting);
 
-            // Channel reminder 1 week before due date
-            if (isMeetingDueInAWeek(meetingStartTime, now)) {
+            // Check if the meeting is due in a week
+            if (isMeetingDueInAWeek(meetingStartTime, now) || isMeetingCreatedWithinAWeekOfStart(meetingStartTime, now)) {
                 sendChannelReminder(reminderMsg);
             }
             // Channel reminder 1 day before due date
@@ -52,6 +52,22 @@ public class MeetingManager {
             }
         });
     }
+
+    private boolean isMeetingCreatedWithinAWeekOfStart(LocalDateTime meetingStartTime, LocalDateTime now) {
+        LocalDateTime oneWeekAgo = now.minusWeeks(1);
+        return meetingStartTime.isAfter(oneWeekAgo) && meetingStartTime.isBefore(now);
+    }
+
+    private boolean isMeetingDueInAWeek(LocalDateTime meetingStartTime, LocalDateTime now) {
+        LocalDateTime oneWeekFromNow = now.plusWeeks(1);
+        return meetingStartTime.isAfter(now) && meetingStartTime.isBefore(oneWeekFromNow);
+    }
+
+    private boolean isMeetingDueInADay(LocalDateTime meetingStartTime, LocalDateTime now) {
+        LocalDateTime oneDayFromNow = now.plusDays(1);
+        return meetingStartTime.isAfter(now) && meetingStartTime.isBefore(oneDayFromNow);
+    }
+
 
     private String reminderMessage(Meeting meeting) {
         StringBuilder message = new StringBuilder();
@@ -70,16 +86,6 @@ public class MeetingManager {
 
         return "⏳ Reminder: " + meeting.getName() + "'s agenda/minutes are due before " + meeting.getFormatStartTime()
                 + "\n- `!meeting list` to display list/edit links of scheduled/active meetings\n" + message;
-    }
-
-    private boolean isMeetingDueInAWeek(LocalDateTime meetingStartTime, LocalDateTime now) {
-        LocalDateTime oneWeekFromNow = now.plusWeeks(1);
-        return meetingStartTime.isAfter(now) && meetingStartTime.isBefore(oneWeekFromNow);
-    }
-
-    private boolean isMeetingDueInADay(LocalDateTime meetingStartTime, LocalDateTime now) {
-        LocalDateTime oneDayFromNow = now.plusDays(1);
-        return meetingStartTime.isAfter(now) && meetingStartTime.isBefore(oneDayFromNow);
     }
 
     private void sendDMReminder(List<User> users, String message) {

@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.commands.prefix;
+package club.sdcs.discordbot.discord.command.prefix;
 
 import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,14 @@ public class HelpCommand implements PrefixCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Displays a list of available commands and their descriptions.";
+    }
+
+    @Override
     public Mono<Void> handle(Message message) {
         String commandList = prefixCommands.stream()
-                .map(PrefixCommand::getName)
+                .map(cmd -> "`" + cmd.getName() + "` - " + cmd.getDescription())
                 .collect(Collectors.joining("\n"));
 
         return message.getChannel()

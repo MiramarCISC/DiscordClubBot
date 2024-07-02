@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.ScheduledEventListeners;
+package club.sdcs.discordbot.discord.listener.ScheduledEvent;
 
 import club.sdcs.discordbot.discord.EventListener;
 import club.sdcs.discordbot.model.Meeting;

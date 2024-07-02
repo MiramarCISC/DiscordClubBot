@@ -1,5 +1,6 @@
-package club.sdcs.discordbot.discord.commands.prefix;
+package club.sdcs.discordbot.discord.command.prefix.meeting;
 
+import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.service.MeetingService;
 import discord4j.core.object.entity.Message;
@@ -20,6 +21,11 @@ public class MeetingListCommand implements PrefixCommand {
     @Override
     public String getName() {
         return "!meeting list";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Lists detail of all active and scheduled meetings.";
     }
 
     @Override
