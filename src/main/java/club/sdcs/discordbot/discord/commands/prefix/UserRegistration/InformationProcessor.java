@@ -1,7 +1,6 @@
 package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 
 import club.sdcs.discordbot.model.User;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import discord4j.common.util.Snowflake;
@@ -12,6 +11,7 @@ import reactor.core.publisher.Mono;
 public class InformationProcessor {
 
     private final ValidityChecker validityChecker = new ValidityChecker();
+    private final long guildID = 1252368620047044648L;
 
     /**
      * sets the user's name
@@ -124,7 +124,7 @@ public class InformationProcessor {
         if (requestedRole.equals("active")) {
             user.setRole(User.Role.ACTIVE);
 
-            return message.getClient().getGuildById(Snowflake.of(1252368620047044648L)) // CHANGE GUILD ID
+            return message.getClient().getGuildById(Snowflake.of(guildID))
                     .flatMap(guild -> guild.getMemberById(Snowflake.of(message.getAuthor().get().getId().asString())))
                     .flatMap(member -> member.edit(GuildMemberEditSpec.builder().addRole(Snowflake.of(1254855153857859656L)).build())) // CHANGE ROLE ID
                     .then(askConfirmation(message, user));
@@ -132,7 +132,7 @@ public class InformationProcessor {
         } else if (requestedRole.equals("inactive")) {
             user.setRole(User.Role.INACTIVE);
 
-            return message.getClient().getGuildById(Snowflake.of(1252368620047044648L)) // CHANGE GUILD ID
+            return message.getClient().getGuildById(Snowflake.of(guildID))
                     .flatMap(guild -> guild.getMemberById(Snowflake.of(message.getAuthor().get().getId().asString())))
                     .flatMap(member -> member.edit(GuildMemberEditSpec.builder().addRole(Snowflake.of(1255218703922888705L)).build())) //CHANGE ROLE ID
                     .then(askConfirmation(message, user));
@@ -247,6 +247,5 @@ public class InformationProcessor {
                 "\nPlease refer to the command above for the proper format and try again.");
 
     } //end createErrorMessage()
-
 
 }

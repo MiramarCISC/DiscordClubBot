@@ -17,13 +17,8 @@ public class UserRegistrationCommand implements PrefixCommand {
 
     public static UserService userService;
     public static boolean registration_mode = false;
-    private final HashMap<String, User> users = new HashMap<>();
+    public static final HashMap<String, User> users = new HashMap<>();
     private static User currentUser = new User();
-
-    public UserRegistrationCommand(UserService userService) {
-        UserRegistrationCommand.userService = userService;
-    }
-
 
     @Override
     public String getName() {

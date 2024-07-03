@@ -2,9 +2,13 @@ package club.sdcs.discordbot.discord;
 
 import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.UserRegistrationCommand;
+import club.sdcs.discordbot.discord.commands.slash.MembershipCommand;
 import club.sdcs.discordbot.model.User;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
+import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Button;
+import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -24,15 +28,15 @@ public class ButtonListener {
             case "start_registration":
                 UserRegistrationCommand.registration_mode = true;
 
-                return event.reply("You have started the registration process. See your direct messages for further detail.")
-                        .then(event.getInteraction().getUser().getPrivateChannel())
-                        .flatMap(privateChannel -> EmbedUtils.createEmbedMessage(privateChannel,
-                                "Registration Process Started",
-                                "Please enter your name to **begin** the registration process.\n\n" +
-                                        "**Step**:\n" +
-                                        "`!user setName [first name] [last name]`"
-                        ))
-                        .then();
+                    return event.reply("You have started the registration process. See your direct messages for further detail.")
+                            .then(event.getInteraction().getUser().getPrivateChannel())
+                            .flatMap(privateChannel -> EmbedUtils.createEmbedMessage(privateChannel,
+                                    "Registration Process Started",
+                                    "Please enter your name to **begin** the registration process.\n\n" +
+                                            "**Step**:\n" +
+                                            "`!user setName [first name] [last name]`"
+                            ))
+                            .then();
 
             default:
                 return Mono.empty();
