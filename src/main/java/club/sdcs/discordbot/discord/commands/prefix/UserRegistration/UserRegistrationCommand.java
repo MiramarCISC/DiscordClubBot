@@ -15,10 +15,14 @@ public class UserRegistrationCommand implements PrefixCommand {
 
     // TODO: ability to unsubscribe from emails and sms
 
-    public static UserService userService;
+    public final UserService userService;
     public static boolean registration_mode = false;
     public static final HashMap<String, User> users = new HashMap<>();
     private static User currentUser = new User();
+
+    public UserRegistrationCommand(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public String getName() {
@@ -36,7 +40,7 @@ public class UserRegistrationCommand implements PrefixCommand {
                     String discordID = message.getAuthor().get().getId().asString();
                     currentUser = users.computeIfAbsent(discordID, id -> new User());
 
-                    InformationProcessor informationProcessor = new InformationProcessor();
+                    InformationProcessor informationProcessor = new InformationProcessor(userService);
                     String[] content = message.getContent().split(" "); //take in message command for membership registration and split up its content
                     String userInfo = content[1]; //takes in what the information the user is setting
 

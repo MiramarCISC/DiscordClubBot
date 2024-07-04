@@ -10,8 +10,8 @@ public class ValidityChecker {
      * @return the validity of the name sent
      */
     public boolean checkNameValidity(String[] content) {
-        // valid name if the message split up has a length of 4
-        return content.length == 4;
+        // valid name if the message split up has a length of 4 / 5
+        return content.length == 4 || content.length == 5;
     } //end checkName()
 
     /**

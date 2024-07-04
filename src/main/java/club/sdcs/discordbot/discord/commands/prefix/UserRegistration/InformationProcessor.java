@@ -3,6 +3,9 @@ package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
 import club.sdcs.discordbot.model.User;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import club.sdcs.discordbot.service.UserService;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.GuildMemberEditSpec;
@@ -10,8 +13,13 @@ import reactor.core.publisher.Mono;
 
 public class InformationProcessor {
 
+    private final UserService userService;
     private final ValidityChecker validityChecker = new ValidityChecker();
     private final long guildID = 1252368620047044648L;
+
+    public InformationProcessor(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * sets the user's name
@@ -28,9 +36,12 @@ public class InformationProcessor {
             String description = "Your name is set to **" + firstName + " " + lastName + "**.\n\n" +
                     "**Next Step:**\n" +
                     "Please enter your **campus email** using the command:\n" +
-                    "`!user setEmail [email]`";
+                    "`!user setEmail [email]`" +
+                    "\n\n\n**Example:**\n";
 
-            return EmbedUtils.createEmbedMessage(message, "Name Received", description);
+            String exampleImage = "https://i.imgur.com/mPjpVTV.png";
+
+            return EmbedUtils.createEmbedMessage(message, "Name Received", description, exampleImage);
         }
 
         return createErrorMessage(message);
@@ -50,9 +61,12 @@ public class InformationProcessor {
             String description = "Your email is set to **" + email + "**.\n\n" +
                     "**Next Step:**\n" +
                     "Please enter your **district ID** using the command:\n" +
-                    "`!user setDistrictID [districtID]`";
+                    "`!user setDistrictID [districtID]`" +
+                    "\n\n\n**Example:**\n";
 
-            return EmbedUtils.createEmbedMessage(message, "Email Received", description);
+            String exampleImage = "https://i.imgur.com/kTOb1GH.png";
+
+            return EmbedUtils.createEmbedMessage(message, "Email Received", description, exampleImage);
         }
 
         return createErrorMessage(message);
@@ -72,9 +86,12 @@ public class InformationProcessor {
             String description = "Your district ID is set to **" + districtID + "**.\n\n" +
                     "**Next Step:**\n" +
                     "Please enter your **phone number** (no dashes) using the command:\n" +
-                    "`!user setPhoneNumber [phone number]`";
+                    "`!user setPhoneNumber [phone number]`" +
+                    "\n\n\n**Example:**\n";
 
-            return EmbedUtils.createEmbedMessage(message, "District ID Received", description);
+            String exampleImage = "https://i.imgur.com/FIAHvNc.png";
+
+            return EmbedUtils.createEmbedMessage(message, "District ID Received", description, exampleImage);
 
         }
 
@@ -157,9 +174,11 @@ public class InformationProcessor {
                 "**\nDistrict ID: **" + user.getDistrictId() +
                 "**\nPhone number: **" + user.getMobileNumber() +
                 "**\nRole Assigned: **" + user.getRole() +
-                "**\n\nType `!user confirm` to **confirm** this user information.\nType `!user edit [field] [information]` to **edit** a specific field before finalizing.";
+                "**\n\nType `!user confirm` to **confirm** this user information.\nType `!user edit [field] [information]` to **edit** a specific field before finalizing.\n\n\n**Example:**\n";
 
-        return EmbedUtils.createEmbedMessage(message, "Confirm Your Details", confirmationMessage);
+        String exampleImage = "https://i.imgur.com/4vmaCzq.png";
+
+        return EmbedUtils.createEmbedMessage(message, "Confirm Your Details", confirmationMessage, exampleImage);
 
     } //end askConfirmation()
 
@@ -171,14 +190,18 @@ public class InformationProcessor {
      * @return bot message telling user it has updated information
      */
     public Mono<Void> editUserDetails(Message message, String[] content, User user) {
+        if (content.length < 4) {
+            return EmbedUtils.createEmbedMessage(message, "Invalid Command", "Please provide the correct information.");
+        }
+
         String fieldToEdit = content[2].toLowerCase();
-        String newInformation = content[3];
+        String newInformation = String.join(" ", Arrays.copyOfRange(content, 3, content.length));
 
         //switch case to know what user information to edit
         switch (fieldToEdit) {
             case "name" -> {
                 String[] nameParts = newInformation.split(" ");
-                if (nameParts.length == 3 && validityChecker.checkNameValidity(content)) {
+                if (validityChecker.checkNameValidity(content)) {
                     user.setFullName(nameParts[0] + " " + nameParts[1]);
                 } else {
                     return createErrorMessage(message);
@@ -205,15 +228,24 @@ public class InformationProcessor {
                     return createErrorMessage(message);
                 }
             }
+            case "role" -> {
+                if (newInformation.equalsIgnoreCase("active")) {
+                    user.setRole(User.Role.ACTIVE);
+                } else if (newInformation.equalsIgnoreCase("inactive")) {
+                    user.setRole(User.Role.INACTIVE);
+                } else {
+                    return createErrorMessage(message);
+                }
+            }
             default -> {
                 return EmbedUtils.createEmbedMessage(message, "Invalid Command", "I did not recognize that command. Ensure that you typed the command as **stated** and the information is **valid**.");
-
             }
-        } //end switch case
+        } // end switch case
 
         return EmbedUtils.createEmbedMessage(message, "Field Information Updated", "Field information updated. Please **confirm** your information again.")
                 .then(askConfirmation(message, user));
-    } //end editUserDetails()
+    } // end editUserDetails()
+
 
     /**
      * confirm user details by saving to user repository
@@ -228,7 +260,7 @@ public class InformationProcessor {
         user.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         user.setStatus(User.Status.REGISTERED);
 
-        UserRegistrationCommand.userService.addUser(user);
+        userService.addUser(user);
         UserRegistrationCommand.registration_mode = false;
 
         return EmbedUtils.createEmbedMessage(message, "Registration Complete", "\nYour details have been **confirmed** and **saved!**" +

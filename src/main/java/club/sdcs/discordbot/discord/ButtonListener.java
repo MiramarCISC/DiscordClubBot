@@ -2,13 +2,8 @@ package club.sdcs.discordbot.discord;
 
 import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.prefix.UserRegistration.UserRegistrationCommand;
-import club.sdcs.discordbot.discord.commands.slash.MembershipCommand;
-import club.sdcs.discordbot.model.User;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
-import discord4j.core.object.component.ActionRow;
-import discord4j.core.object.component.Button;
-import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -34,7 +29,9 @@ public class ButtonListener {
                                     "Registration Process Started",
                                     "Please enter your name to **begin** the registration process.\n\n" +
                                             "**Step**:\n" +
-                                            "`!user setName [first name] [last name]`"
+                                            "`!user setName [first name] [last name]`" +
+                                            "\n\n\n**Example:**\n",
+                                    "https://i.imgur.com/xx1rjLz.png"
                             ))
                             .then();
 

@@ -18,7 +18,7 @@ public class EmbedUtils {
     public static Mono<Void> createEmbedMessage(Message message, String title, String description) {
         return message.getChannel()
                 .flatMap(channel -> createEmbedMessage(channel, title, description));
-    }
+    } // end createEmbedMessage()
 
     /**
      * creates an embed message for the bot
@@ -34,7 +34,22 @@ public class EmbedUtils {
                                 .description(description)
                                 .color(Color.SUMMER_SKY)
                                 .build()
-                )
-                .then();
+                ).then();
+    } //end createEmbedMessage()
+
+    public static Mono<Void> createEmbedMessage(Message message, String title, String description, String imageUrl) {
+        return message.getChannel()
+                .flatMap(channel -> createEmbedMessage(channel, title, description, imageUrl));
+    } //end createEmbedMessage()
+
+    public static Mono<Void> createEmbedMessage(MessageChannel messageChannel, String title, String description, String imageUrl) {
+        return messageChannel.createMessage(
+                EmbedCreateSpec.builder()
+                        .title(title)
+                        .description(description)
+                        .image(imageUrl)
+                        .color(Color.SUMMER_SKY)
+                        .build()
+        ).then();
     } //end createEmbedMessage()
 }
