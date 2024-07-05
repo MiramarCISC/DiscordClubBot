@@ -8,6 +8,10 @@ import discord4j.core.object.component.TextInput;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+/**
+ * Listener for handling InteractionPresentModalSpec modal
+ * @see club.sdcs.discordbot.discord.listener.button.LinksInputButtonListener
+ */
 @Component
 public class ModalSubmitListener implements EventListener<ModalSubmitInteractionEvent> {
     private final MeetingService meetingService;
@@ -28,6 +32,7 @@ public class ModalSubmitListener implements EventListener<ModalSubmitInteraction
         String agendaLink = "";
         String minutesLink = "";
 
+        // Unliked way of retrieving modal values
         for (TextInput component : event.getComponents(TextInput.class)) {
             String value = component.getValue().orElse("");
             if ((customId + "agenda").equals(component.getCustomId())) {

@@ -31,6 +31,7 @@ public class MeetingShowCommand implements PrefixCommand {
         String content = message.getContent();
         String[] parts = content.split(" ");
 
+        // Check if the command has the correct number of arguments
         if (parts.length < 3) {
             return message.getChannel()
                     .flatMap(channel -> channel.createMessage("Please provide a meeting ID. Usage: !meeting show [meeting_id]"))
@@ -40,6 +41,7 @@ public class MeetingShowCommand implements PrefixCommand {
         String meetingIdStr = parts[2];
         long meetingId;
 
+        // Try to parse the meeting ID from the command arguments
         try {
             meetingId = Long.parseLong(meetingIdStr);
         } catch (NumberFormatException e) {

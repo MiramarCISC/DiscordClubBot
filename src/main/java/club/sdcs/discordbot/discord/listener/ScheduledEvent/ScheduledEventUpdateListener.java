@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 import java.time.ZoneId;
 import java.time.LocalDateTime;
 
+/**
+ * Listener for handling creation of server events
+ */
 @Component
 public class ScheduledEventUpdateListener implements EventListener<ScheduledEventUpdateEvent> {
     private final MeetingService meetingService;
@@ -42,9 +45,11 @@ public class ScheduledEventUpdateListener implements EventListener<ScheduledEven
     private Mono<Meeting> updatedMeeting(ScheduledEventUpdateEvent updatedEvent) {
         return Mono.justOrEmpty(updatedEvent.getOld())
                 .flatMap(oldScheduledEvent -> {
+                    // Obtain the meeting based on the old scheduled event ID
                     Meeting meeting = meetingService.findMeetingById(oldScheduledEvent.getId().asLong());
                     return Mono.justOrEmpty(updatedEvent.getCurrent())
                             .flatMap(currentScheduledEvent -> {
+                                // Update the meeting details with the new scheduled event information/meeting obj
                                 meeting.setMeetingId(currentScheduledEvent.getId().asLong());
                                 meeting.setName(currentScheduledEvent.getName());
                                 meeting.setDescription(currentScheduledEvent.getDescription().orElse("No description"));
@@ -54,6 +59,7 @@ public class ScheduledEventUpdateListener implements EventListener<ScheduledEven
                                         meeting.setEndTime(LocalDateTime.ofInstant(endTime, ZoneId.of(ZONE_ID))));
                                 meeting.setStatus(currentScheduledEvent.getStatus().getValue());
 
+                                // Update the meeting in the meeting service
                                 return Mono.fromRunnable(() -> meetingService.updateMeeting(meeting)).thenReturn(meeting);
                             });
                 });

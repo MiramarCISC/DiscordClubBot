@@ -7,6 +7,9 @@ import discord4j.core.event.domain.guild.ScheduledEventDeleteEvent;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+/**
+ * Listener for handling deleted server events
+ */
 @Component
 public class ScheduledEventDeleteListener implements EventListener<ScheduledEventDeleteEvent> {
     private final MeetingService meetingService;
@@ -25,6 +28,7 @@ public class ScheduledEventDeleteListener implements EventListener<ScheduledEven
         return processEvent(event);
     }
 
+    // Updates status changed event in DB
     public Mono<Void> processEvent(ScheduledEventDeleteEvent event) {
         Meeting meeting = meetingService.findMeetingById(event.getScheduledEvent().getId().asLong());
         meeting.setStatus(4); // CANCELLED status

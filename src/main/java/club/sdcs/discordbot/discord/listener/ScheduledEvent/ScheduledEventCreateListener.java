@@ -13,6 +13,9 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Listener for handling creation of server events
+ */
 @Component
 public class ScheduledEventCreateListener implements EventListener<ScheduledEventCreateEvent> {
     private final MeetingService meetingService;
@@ -49,7 +52,7 @@ public class ScheduledEventCreateListener implements EventListener<ScheduledEven
         meeting.setLocation(scheduledEvent.getLocation().orElse("No location"));
         meeting.setStartTime(LocalDateTime.ofInstant(scheduledEvent.getStartTime(), ZoneId.of(ZONE_ID)));
         if (scheduledEvent.getEndTime().isPresent()) meeting.setEndTime(LocalDateTime.ofInstant(scheduledEvent.getEndTime().get(), ZoneId.of(ZONE_ID)));
-        meeting.setQuorumMet(false);
+        meeting.setQuorumMet(false); // default value
         meeting.setStatus(scheduledEvent.getStatus().getValue());
         return Mono.fromCallable(() -> meetingService.addMeeting(meeting)).thenReturn(meeting);
     }

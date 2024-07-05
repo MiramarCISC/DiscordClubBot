@@ -118,6 +118,7 @@ public class Meeting extends Auditable {
         return status;
     }
 
+    // Discord API status is represented by integers 1-4
     public void setStatus(int status) {
         switch (status) {
             case 1:
@@ -184,7 +185,7 @@ public class Meeting extends Auditable {
                 .addField("Quorum Met", isQuorumMet ? "Yes" : "No", true);
     }
 
-    // Text only message
+    // Non-interactive message
     public EmbedCreateSpec toDiscordFormatEmbed() {
         return createEmbedBuilder().build();
     }
@@ -192,10 +193,10 @@ public class Meeting extends Auditable {
     // Allows Discord buttons/interactions
     public MessageCreateSpec toDiscordFormatMessage() {
         EmbedCreateSpec embed = createEmbedBuilder().build();
-
         return MessageCreateSpec.builder()
                 .addEmbed(embed)
-                .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), "input agenda/minutes link")))
+                .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), // unique button per meeting obj
+                        "input agenda/minutes link")))
                 .build();
     }
 }

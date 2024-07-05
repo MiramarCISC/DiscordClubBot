@@ -1,6 +1,7 @@
 package club.sdcs.discordbot.discord.listener.button;
 
 import club.sdcs.discordbot.discord.EventListener;
+import club.sdcs.discordbot.model.Meeting;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.spec.InteractionPresentModalSpec;
 import discord4j.core.object.component.ActionRow;
@@ -8,6 +9,10 @@ import discord4j.core.object.component.TextInput;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+/**
+ * Listener for handling Meeting's MessageCreateSpec button
+ * @see Meeting#toDiscordFormatMessage()
+ */
 @Component
 public class LinksInputButtonListener implements EventListener<ButtonInteractionEvent> {
 
@@ -27,12 +32,9 @@ public class LinksInputButtonListener implements EventListener<ButtonInteraction
         InteractionPresentModalSpec modalSpec = InteractionPresentModalSpec.builder()
                 .title("Enter links")
                 .customId(meetingId)
-                .addComponent(ActionRow.of(
-                        TextInput.small(meetingId + "agenda", "Agenda link:")
-                ))
-                .addComponent(ActionRow.of(
-                        TextInput.small(meetingId + "minutes", "Minutes link:")
-                ))
+                // customId prevents conflict of reference
+                .addComponent(ActionRow.of(TextInput.small(meetingId + "agenda", "Agenda link:")))
+                .addComponent(ActionRow.of(TextInput.small(meetingId + "minutes", "Minutes link:")))
                 .build();
         return event.presentModal(modalSpec);
     }
