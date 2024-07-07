@@ -13,12 +13,7 @@ import java.util.HashMap;
 @Component
 public class UserRegistrationCommand implements PrefixCommand {
 
-    // TODO: ability to unsubscribe from emails and sms
-
     public final UserService userService;
-    public static boolean registration_mode = false;
-    public static final HashMap<String, User> users = new HashMap<>();
-    private static User currentUser = new User();
 
     public UserRegistrationCommand(UserService userService) {
         this.userService = userService;
@@ -31,38 +26,7 @@ public class UserRegistrationCommand implements PrefixCommand {
 
     @Override
     public Mono<Void> handle(Message message) {
-
-        return Mono.just(message)
-                .filter(msg -> msg.getAuthor().map(user -> !user.isBot()).orElse(false))
-                .flatMap(Message::getChannel)
-                .filter(channel -> channel instanceof PrivateChannel)
-                .flatMap(channel -> {
-                    String discordID = message.getAuthor().get().getId().asString();
-                    currentUser = users.computeIfAbsent(discordID, id -> new User());
-
-                    InformationProcessor informationProcessor = new InformationProcessor(userService);
-                    String[] content = message.getContent().split(" "); //take in message command for membership registration and split up its content
-                    String userInfo = content[1]; //takes in what the information the user is setting
-
-                    //check which user info is being set and save that user information
-                    if (registration_mode) {
-                        return switch (userInfo.toLowerCase()) {
-                            case "setname" -> informationProcessor.processName(message, content, currentUser);
-                            case "setemail" -> informationProcessor.processEmail(message, content, currentUser);
-                            case "setdistrictid" -> informationProcessor.processDistrictID(message, content, currentUser);
-                            case "setphonenumber" -> informationProcessor.processPhone(message, content, currentUser);
-                            case "confirm" -> informationProcessor.confirmUserDetails(message, currentUser);
-                            case "edit" -> informationProcessor.editUserDetails(message, content, currentUser);
-                            case "request" -> informationProcessor.assignRoleToUser(message, content, currentUser);
-                            default ->
-                                    channel.createMessage("I did not recognize that command. Ensure that you typed the command as stated.");
-                        }; //end switch case
-                    } else {
-                        return Mono.empty();
-                    }
-
-                }) //end .flatMap()
-                .then(); //end return statement
-
+        return Mono.empty();
     } //end handle()
+
 } //end UserRegistrationCommand class

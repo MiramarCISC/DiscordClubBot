@@ -1,16 +1,24 @@
 package club.sdcs.discordbot.config;
 
-import club.sdcs.discordbot.discord.EventListener;
+import club.sdcs.discordbot.discord.listener.EventListener;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
+import discord4j.core.event.domain.guild.GuildCreateEvent;
+import discord4j.core.event.domain.guild.MemberJoinEvent;
+import discord4j.core.event.domain.lifecycle.ReadyEvent;
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.discordjson.json.ApplicationCommandRequest;
+import discord4j.discordjson.json.gateway.GuildMemberAdd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -42,12 +50,10 @@ public class DiscordClient {
                     .subscribe();
         }
 
-        //Register all slash commands created
+        //slash commands
         if (client != null) {
 
-            //change to needed discord server ID
-            long guildId = 1252368620047044648L;
-            Snowflake guildSnowflake = Snowflake.of(guildId);
+            Snowflake guildSnowflake = Snowflake.of(serverId);
 
             ApplicationCommandRequest membershipCommandRequest = ApplicationCommandRequest.builder()
                     .name("membership")

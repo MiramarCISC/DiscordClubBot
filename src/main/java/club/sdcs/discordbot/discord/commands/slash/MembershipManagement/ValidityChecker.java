@@ -1,18 +1,8 @@
-package club.sdcs.discordbot.discord.commands.prefix.UserRegistration;
+package club.sdcs.discordbot.discord.commands.slash.MembershipManagement;
 
 import java.util.regex.Pattern;
 
 public class ValidityChecker {
-
-    /**
-     * checks if name during registration process is valid
-     * @param content takes in message sent by user
-     * @return the validity of the name sent
-     */
-    public boolean checkNameValidity(String[] content) {
-        // valid name if the message split up has a length of 4 / 5
-        return content.length == 4 || content.length == 5;
-    } //end checkName()
 
     /**
      * checks if email during registration process is formatted correctly

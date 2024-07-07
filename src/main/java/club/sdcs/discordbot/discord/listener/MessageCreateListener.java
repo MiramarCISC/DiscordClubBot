@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord;
+package club.sdcs.discordbot.discord.listener;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.springframework.stereotype.Service;

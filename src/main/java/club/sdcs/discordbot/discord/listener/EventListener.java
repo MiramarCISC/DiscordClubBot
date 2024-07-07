@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord;
+package club.sdcs.discordbot.discord.listener;
 
 import discord4j.core.event.domain.Event;
 import org.slf4j.Logger;
