@@ -1,5 +1,6 @@
 package club.sdcs.discordbot.discord.commands.prefix;
 
+import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.ValidityChecker;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
@@ -53,13 +54,13 @@ public class UserEditCommand implements PrefixCommand {
 
                 case "name" -> {
                     user.setFullName(newInformation);
-                    return message.getChannel().flatMap(channel -> channel.createMessage("Successfully edited the user!\nName: " + user.getFullName()).then());
+                    return createUserInformationMessage(message, user);
                 }
 
                 case "email" -> {
                     if (validityChecker.checkEmailValidity(newInformation)) {
                         user.setEmail(newInformation);
-                        return message.getChannel().flatMap(channel -> channel.createMessage("Successfully edited the user!\nEmail: " + user.getEmail()).then());
+                        return createUserInformationMessage(message, user);
                     } else {
                         return createErrorMessage(message);
                     }
@@ -68,7 +69,7 @@ public class UserEditCommand implements PrefixCommand {
                 case "districtid" -> {
                     if (validityChecker.checkDistrictIDValidity(newInformation)) {
                         user.setDistrictId(Long.parseLong(newInformation));
-                        return message.getChannel().flatMap(channel -> channel.createMessage("Successfully edited the user!\nDistrict ID: " + user.getDistrictId()).then());
+                        return createUserInformationMessage(message, user);
                     } else {
                         return createErrorMessage(message);
                     }
@@ -77,7 +78,7 @@ public class UserEditCommand implements PrefixCommand {
                 case "phonenumber" -> {
                     if (validityChecker.checkPhoneNumberValidity(newInformation)) {
                         user.setMobileNumber(Long.parseLong(newInformation));
-                        return message.getChannel().flatMap(channel -> channel.createMessage("Successfully edited the user!\nPhone Number: " + user.getMobileNumber()).then());
+                        return createUserInformationMessage(message, user);
                     } else {
                         return createErrorMessage(message);
                     }
@@ -115,5 +116,14 @@ public class UserEditCommand implements PrefixCommand {
                 .then();
 
     } //end createErrorMessage()
+
+    private Mono<Void> createUserInformationMessage(Message message, User user) {
+        return message.getChannel()
+                .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "User Information", "This is all the information you have saved" +
+                                " to the SDCS Club.\n\nName: **" + user.getFullName() + "**\nEmail: **" + user.getEmail() + "**\nDistrict ID: **" +
+                                user.getDistrictId() + "**\nPhone Number: **" + user.getMobileNumber() + "**\n\nIf at anytime you wish to **update** your details, please" +
+                                "\nrefer to the following **command** and answer in this **DM**.\n\n**`!user edit [insert_field_name] [insert_information]`**\n\nExamples Provided Below:\n",
+                        "https://i.imgur.com/4vmaCzq.png"));
+    }
 
 } //end UserRegistrationCommand class

@@ -106,6 +106,7 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
                 .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "User Information", "This is all the information you have saved" +
                         " to the SDCS Club.\n\nName: **" + user.getFullName() + "**\nEmail: **" + user.getEmail() + "**\nDistrict ID: **" +
                         user.getDistrictId() + "**\nPhone Number: **" + user.getMobileNumber() + "**\n\nIf at anytime you wish to **update** your details, please" +
-                        "\nrefer to the following **command** and answer in this **DM**.\n\n**`!user edit [insert_field_name] [insert_information]`**"));
+                        "\nrefer to the following **command** and answer in this **DM**.\n\n**`!user edit [insert_field_name] [insert_information]`**\n\nExamples Provided Below:\n",
+                        "https://i.imgur.com/4vmaCzq.png"));
     } //end endRegistrationProcess()
 }

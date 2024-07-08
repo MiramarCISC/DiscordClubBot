@@ -1,13 +1,10 @@
 package club.sdcs.discordbot.discord.listener.button;
 
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
 import club.sdcs.discordbot.discord.listener.EventListener;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
-import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.core.spec.InteractionPresentModalSpec;
 import discord4j.rest.util.Color;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -26,16 +23,13 @@ public class OptInButtonListener implements EventListener<ButtonInteractionEvent
     @Override
     public Mono<Void> execute(ButtonInteractionEvent event) {
 
-        if (event.getInteraction().getUser().getId().asLong() != RegistrationButtonListener.userID) {
-            return event.getInteraction().getChannel()
-                    .flatMap(channel -> channel.createMessage("You are not the person who started the registration process." +
-                            "\nIf you wish to register, please use the command `/membership` and start the process yourself."))
-                    .then();
-        }
-
         String customId = event.getCustomId();
 
         if (customId.startsWith("optinemail_")) {
+            if (event.getInteraction().getUser().getId().asLong() != RegistrationButtonListener.userID) {
+                return createInvalidUserMessage(event);
+            }
+
             optInEmail = customId.equals("optinemail_yes");
             return event.edit()
                     .withEmbeds(EmbedCreateSpec.builder()
@@ -48,6 +42,10 @@ public class OptInButtonListener implements EventListener<ButtonInteractionEvent
                             Button.danger("optinphone_no", "No")
                     ));
         } else if (customId.startsWith("optinphone_")) {
+            if (event.getInteraction().getUser().getId().asLong() != RegistrationButtonListener.userID) {
+                return createInvalidUserMessage(event);
+            }
+
             optInPhone = customId.equals("optinphone_yes");
             return event.edit()
                     .withEmbeds(EmbedCreateSpec.builder()
@@ -61,6 +59,13 @@ public class OptInButtonListener implements EventListener<ButtonInteractionEvent
         }
 
         return Mono.empty();
+    }
+
+    private Mono<Void> createInvalidUserMessage(ButtonInteractionEvent event) {
+        return event.getInteraction().getChannel()
+                .flatMap(channel -> channel.createMessage("You are not the person who started the registration process." +
+                        "\nIf you wish to register, please use the command `/membership` and start the process yourself."))
+                .then();
     }
 
 }
