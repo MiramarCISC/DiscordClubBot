@@ -15,7 +15,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserByDiscordId(long id){
+    public User getUserByDiscordId(long id) {
+
+        System.out.println("User ID: " + id);
         return userRepository.findByDiscordId(id);
     }
 }

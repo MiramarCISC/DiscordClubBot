@@ -16,6 +16,7 @@ public class RegistrationButtonListener implements EventListener<ButtonInteracti
 
     private final UserService userService;
     public static boolean optInEmail, optInPhone;
+    public static long userID;
 
     public RegistrationButtonListener(UserService userService) {
         this.userService = userService;
@@ -31,14 +32,14 @@ public class RegistrationButtonListener implements EventListener<ButtonInteracti
         long discordUser = event.getInteraction().getUser().getId().asLong();
         User user = userService.getUserByDiscordId(discordUser);
 
-        // TODO: CHECK FOR IF USER IS REGISTERED ALREADY
         if (user != null) {
             if (user.getStatus() == User.Status.REGISTERED) {
-                return event.reply("You have already completed the registration process.");
+                return event.reply(user.getFullName() + ", you have already completed the registration process.");
             }
         }
 
         String customId = event.getCustomId();
+        userID = event.getInteraction().getUser().getId().asLong();
 
         if (customId.equalsIgnoreCase("start_registration")) {
             return event.edit()
