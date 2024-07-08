@@ -1,9 +1,9 @@
 package club.sdcs.discordbot.discord.listener.modal;
 
-import club.sdcs.discordbot.DiscordClubBotApplication;
 import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.InformationProcessor;
 import club.sdcs.discordbot.discord.listener.EventListener;
+import club.sdcs.discordbot.discord.listener.button.RegistrationButtonListener;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent;
@@ -32,6 +32,14 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
 
     @Override
     public Mono<Void> execute(ModalSubmitInteractionEvent event) {
+
+        if (event.getInteraction().getUser().getId().asLong() != RegistrationButtonListener.userID) {
+            return event.getInteraction().getChannel()
+                    .flatMap(channel -> channel.createMessage("You are not the person who started the registration process." +
+                            "\nIf you wish to register, please use the command `/membership` and start the process yourself."))
+                    .then();
+        }
+
         boolean validInformation = true;
         StringBuilder errorMessage = new StringBuilder("Error received:");
 
@@ -85,13 +93,19 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
     } //end handleError()
 
     private Mono<Void> endRegistrationProcess(ModalSubmitInteractionEvent event, User user) {
-        user.setDiscordId(event.getInteraction().getId().asLong());
+        user.setDiscordId(event.getInteraction().getUser().getId().asLong());
+        System.out.println(user.getDiscordId());
+
         user.setDiscordName(event.getInteraction().getUser().getUsername());
         user.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         user.setStatus(User.Status.REGISTERED);
 
         userService.addUser(user);
 
-        return Mono.empty();
+        return event.getInteraction().getUser().getPrivateChannel()
+                .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "User Information", "This is all the information you have saved" +
+                        " to the SDCS Club.\n\nName: **" + user.getFullName() + "**\nEmail: **" + user.getEmail() + "**\nDistrict ID: **" +
+                        user.getDistrictId() + "**\nPhone Number: **" + user.getMobileNumber() + "**\n\nIf at anytime you wish to **update** your details, please" +
+                        "\nrefer to the following **command** and answer in this **DM**.\n\n**`!user edit [insert_field_name] [insert_information]`**"));
     } //end endRegistrationProcess()
 }

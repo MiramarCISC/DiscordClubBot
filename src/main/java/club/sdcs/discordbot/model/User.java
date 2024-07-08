@@ -118,7 +118,7 @@ public class User extends Auditable {
         return mobileNumber;
     }
 
-    public void setMobileNumber(long mobileNumber) {
+    public void setMobileNumber(Long mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 

@@ -26,6 +26,13 @@ public class OptInButtonListener implements EventListener<ButtonInteractionEvent
     @Override
     public Mono<Void> execute(ButtonInteractionEvent event) {
 
+        if (event.getInteraction().getUser().getId().asLong() != RegistrationButtonListener.userID) {
+            return event.getInteraction().getChannel()
+                    .flatMap(channel -> channel.createMessage("You are not the person who started the registration process." +
+                            "\nIf you wish to register, please use the command `/membership` and start the process yourself."))
+                    .then();
+        }
+
         String customId = event.getCustomId();
 
         if (customId.startsWith("optinemail_")) {
