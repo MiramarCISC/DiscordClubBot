@@ -27,9 +27,14 @@ public class MembershipCommand implements SlashCommand {
         return event.reply(InteractionApplicationCommandCallbackSpec.builder()
                     .addEmbed(createMembershipEmbed())
                     .addComponent(actionRow)
+                    .ephemeral(true)
                     .build());
     } //end handle()
 
+    /**
+     * creates membership embed
+     * @return the embed
+     */
     private EmbedCreateSpec createMembershipEmbed() {
         return EmbedCreateSpec.builder()
                 .color(Color.SUMMER_SKY)

@@ -15,8 +15,7 @@ import reactor.core.publisher.Mono;
 public class RegistrationButtonListener implements EventListener<ButtonInteractionEvent> {
 
     private final UserService userService;
-    public static boolean optInEmail, optInPhone;
-    public static long userID;
+    public static boolean optInEmail, optInPhone, optInActive, optInVoter;
 
     public RegistrationButtonListener(UserService userService) {
         this.userService = userService;
@@ -39,7 +38,6 @@ public class RegistrationButtonListener implements EventListener<ButtonInteracti
         }
 
         String customId = event.getCustomId();
-        userID = event.getInteraction().getUser().getId().asLong();
 
         if (customId.equalsIgnoreCase("start_registration")) {
             return event.edit()
@@ -60,6 +58,13 @@ public class RegistrationButtonListener implements EventListener<ButtonInteracti
 
     } //end execute()
 
+    /**
+     * shows registration modal
+     * @param event takes in button interaction event
+     * @param optInEmail takes in if user opted to subscribe to email
+     * @param optInSMS takes in if user opted to subscribe to sms
+     * @return the modal
+     */
     private Mono<Void> showModal(ButtonInteractionEvent event, boolean optInEmail, boolean optInSMS) {
         String registrationId = event.getCustomId();
 
