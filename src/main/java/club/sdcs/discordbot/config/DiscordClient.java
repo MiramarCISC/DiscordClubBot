@@ -13,6 +13,7 @@ import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.discordjson.json.gateway.GuildMemberAdd;
+import discord4j.gateway.intent.IntentSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,8 @@ public class DiscordClient {
         LOG.debug(serverId);
         GatewayDiscordClient client = DiscordClientBuilder.create(token)
                 .build()
+                .gateway()
+                .setEnabledIntents(IntentSet.all())
                 .login()
                 .block();
 
@@ -64,6 +67,7 @@ public class DiscordClient {
                     .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), membershipCommandRequest)
                     .subscribe();
         }
+
 
         return client;
     }
