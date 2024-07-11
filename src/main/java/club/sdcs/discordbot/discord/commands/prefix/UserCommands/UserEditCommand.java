@@ -1,5 +1,6 @@
-package club.sdcs.discordbot.discord.commands.prefix;
+package club.sdcs.discordbot.discord.commands.prefix.UserCommands;
 
+import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
 import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
 import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.ValidityChecker;
 import club.sdcs.discordbot.model.User;

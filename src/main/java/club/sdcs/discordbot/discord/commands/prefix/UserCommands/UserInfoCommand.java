@@ -1,5 +1,8 @@
-package club.sdcs.discordbot.discord.commands.prefix;
+package club.sdcs.discordbot.discord.commands.prefix.UserCommands;
 
+import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
+import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
+import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
@@ -43,19 +46,21 @@ public class UserInfoCommand implements PrefixCommand {
                                     .flatMap(guild -> findMemberByTag(guild, message, userTag))
                                     .flatMap(member1 -> {
                                         long userId = member1.getId().asLong();
-                                        String realName;
+                                        User user;
 
                                         if (userService.getUserByDiscordId(userId) != null) {
-                                            realName = userService.getUserByDiscordId(userId).getFullName();
+                                            user = userService.getUserByDiscordId(userId);
                                         } else {
-                                            realName = null;
+                                            user = null;
                                             return message.getChannel()
                                                     .flatMap(channel -> channel.createMessage("This user has not completed the registration process."))
                                                     .then();
                                         }
 
                                         return message.getChannel()
-                                                .flatMap(channel -> channel.createMessage("The real name of this user is: " + realName))
+                                                .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "User Info: " + member1.getTag(),
+                                                                "Name: **" + user.getFullName() + "**\nDistrict ID: **" + user.getDistrictId() +
+                                                                        "**\nCampus Email: **" + user.getEmail() + "**\nPhone Number: **" + user.getMobileNumber() + "**"))
                                                 .then();
 
                                     });
