@@ -83,6 +83,7 @@ public class UserInfoCommand implements PrefixCommand {
     /**
      * finds member by the user tag
      * @param guild takes in guild of user
+     * @param message takes in message
      * @param userTag takes in user tag
      * @return if it finds a match
      */
