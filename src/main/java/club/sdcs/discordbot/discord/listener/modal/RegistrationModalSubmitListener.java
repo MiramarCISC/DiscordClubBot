@@ -1,16 +1,14 @@
 package club.sdcs.discordbot.discord.listener.modal;
 
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.InformationProcessor;
+import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.discord.command.slash.membership.InformationProcessor;
 import club.sdcs.discordbot.discord.listener.EventListener;
-import club.sdcs.discordbot.discord.listener.button.RegistrationButtonListener;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.core.spec.MessageEditSpec;
 import discord4j.rest.util.Color;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

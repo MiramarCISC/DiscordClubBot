@@ -1,8 +1,8 @@
-package club.sdcs.discordbot.discord.commands.prefix.UserCommands;
+package club.sdcs.discordbot.discord.command.prefix.user;
 
-import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.ValidityChecker;
+import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
+import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.discord.command.slash.membership.ValidityChecker;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.object.entity.Message;
@@ -25,6 +25,11 @@ public class UserEditCommand implements PrefixCommand {
     @Override
     public String getName() {
         return "!user edit";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Edit user information";
     }
 
     @Override

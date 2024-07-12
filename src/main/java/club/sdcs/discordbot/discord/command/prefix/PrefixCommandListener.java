@@ -1,6 +1,4 @@
-package club.sdcs.discordbot.discord.commands.prefix;
-
-
+package club.sdcs.discordbot.discord.command.prefix;
 
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -13,7 +11,6 @@ import java.util.Collection;
 
 @Component
 public class PrefixCommandListener {
-
     private final Collection<PrefixCommand> prefixCommands;
 
     public PrefixCommandListener(Collection<PrefixCommand> messagePrefixCommands, GatewayDiscordClient client) {

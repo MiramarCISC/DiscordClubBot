@@ -1,9 +1,7 @@
-package club.sdcs.discordbot.discord.commands.prefix.UserCommands;
+package club.sdcs.discordbot.discord.command.prefix.user;
 
-import club.sdcs.discordbot.discord.commands.prefix.PrefixCommand;
-import club.sdcs.discordbot.discord.commands.slash.MembershipManagement.EmbedUtils;
-import club.sdcs.discordbot.model.User;
-import discord4j.core.object.Embed;
+import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
+import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -18,6 +16,11 @@ public class UserListCommand implements PrefixCommand {
     @Override
     public String getName() {
         return "!user list";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Lists all users";
     }
 
     @Override
