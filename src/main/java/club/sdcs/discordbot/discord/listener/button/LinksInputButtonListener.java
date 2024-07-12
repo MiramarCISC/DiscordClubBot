@@ -29,14 +29,18 @@ public class LinksInputButtonListener implements EventListener<ButtonInteraction
     private Mono<Void> showModal(ButtonInteractionEvent event) {
         String meetingId = event.getCustomId();
 
-        InteractionPresentModalSpec modalSpec = InteractionPresentModalSpec.builder()
-                .title("Enter links")
-                .customId(meetingId)
-                // customId prevents conflict of reference
-                .addComponent(ActionRow.of(TextInput.small(meetingId + "agenda", "Agenda link:").required(false)))
-                .addComponent(ActionRow.of(TextInput.small(meetingId + "minutes", "Minutes link:").required(false)))
-                .build();
-        return event.presentModal(modalSpec);
+        if (!meetingId.equalsIgnoreCase("start_registration") && !meetingId.startsWith("optin") && !meetingId.equalsIgnoreCase("registration_form")) {
+            InteractionPresentModalSpec modalSpec = InteractionPresentModalSpec.builder()
+                    .title("Enter links")
+                    .customId(meetingId)
+                    // customId prevents conflict of reference
+                    .addComponent(ActionRow.of(TextInput.small(meetingId + "agenda", "Agenda link:").required(false)))
+                    .addComponent(ActionRow.of(TextInput.small(meetingId + "minutes", "Minutes link:").required(false)))
+                    .build();
+            return event.presentModal(modalSpec);
+        }
+
+        return Mono.empty();
     }
 
     @Override

@@ -31,7 +31,7 @@ public class OptInButtonListener implements EventListener<ButtonInteractionEvent
                     .withEmbeds(EmbedCreateSpec.builder()
                             .title("SMS Opt-In")
                             .color(Color.SUMMER_SKY)
-                            .description("Would you like to opt-in to receive email notifications?\nThis means registering your phone number to the club.")
+                            .description("Would you like to opt-in to receive phone notifications?\nThis means registering your phone number to the club.")
                             .build())
                     .withComponents(ActionRow.of(
                             Button.success("optinphone_yes", "Yes"),

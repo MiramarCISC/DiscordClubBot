@@ -18,7 +18,7 @@ public class WelcomeMessageListener implements EventListener<MemberJoinEvent> {
     @Override
     public Mono<Void> execute(MemberJoinEvent event) {
         return event.getGuild()
-                .flatMap(guild -> guild.getChannelById(Snowflake.of(1258908355058204732L)))
+                .flatMap(guild -> guild.getChannelById(Snowflake.of(1239977129869967494L)))
                 .cast(MessageChannel.class)
                 .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "Welcome " + event.getMember().getUsername().toUpperCase(),
                         "Welcome to the **Miramar SDCS Club** " + event.getMember().getMention() + "! To begin your **registration** as a member of the club, " +

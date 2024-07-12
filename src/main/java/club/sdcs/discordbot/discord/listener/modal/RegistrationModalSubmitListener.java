@@ -8,6 +8,7 @@ import club.sdcs.discordbot.service.UserService;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent;
 import discord4j.core.object.component.TextInput;
+import discord4j.core.object.entity.Role;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +30,6 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
 
     @Value("${spring.discord.server-id}")
     private String guildId;
-
-    private final long activeRoleId = 1254855153857859656L;
-    private final long inactiveRoleId = 1255218703922888705L;
-    private final long voterRoleId = 1259364801641975899L;
 
     public RegistrationModalSubmitListener(UserService userService) {
         this.userService = userService;
@@ -107,32 +104,27 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
     /**
      * update user role
      * @param event takes in modal submit interaction event
-     * @param user takes in user who submits
      * @param discordID takes in user discord ID
      * @return updated role
      */
     private Mono<Void> updateUserRole(ModalSubmitInteractionEvent event, User user, String discordID) {
 
-        if (optInActive) {
-            user.setRole(User.Role.ACTIVE);
+        return getRoleByName(event, optInActive ? "Active" : "Inactive")
+                .flatMap(role -> event.getClient().getGuildById(Snowflake.of(guildId))
+                        .flatMap(guild -> guild.getMemberById(Snowflake.of(discordID)))
+                        .flatMap(member -> {
+                            Mono<Void> addRole = member.addRole(role.getId());
+                            if (optInActive) {
+                                user.setRole(User.Role.ACTIVE);
+                            }
 
-            return event.getClient().getGuildById(Snowflake.of(guildId))
-                    .flatMap(guild -> guild.getMemberById(Snowflake.of(discordID)))
-                    .flatMap(member -> {
-                        Mono<Void> addRole = member.addRole(Snowflake.of(activeRoleId));
-                        if (optInVoter) {
-                            return addRole.then(member.addRole(Snowflake.of(voterRoleId)));
-                        } else {
-                            return addRole;
-                        }
-                    });
-
-        } else {
-            user.setRole(User.Role.INACTIVE);
-            return event.getClient().getGuildById(Snowflake.of(guildId))
-                    .flatMap(guild -> guild.getMemberById(Snowflake.of(discordID)))
-                    .flatMap(member -> member.addRole(Snowflake.of(inactiveRoleId)));
-        }
+                            if (optInVoter) {
+                                return getRoleByName(event, "Voter")
+                                        .flatMap(voterRole -> addRole.then(member.addRole(voterRole.getId())));
+                            } else {
+                                return addRole;
+                            }
+                        }));
     } //end updateUserRole()
 
     /**
@@ -157,4 +149,18 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
                         "\nrefer to the following **command** and answer in this **DM**. You do not have the ability to update your role. That is entirely dependent\non your participation in the club and is subject to change.\n\n**`!user edit [insert_field_name] [insert_information]`**\n\nExamples Provided Below:\n",
                         "https://i.imgur.com/mOB0kaf.png"));
     } //end endRegistrationProcess()
+
+    /**
+     * retrieves a role by name
+     * @param event ModalSubmitInteraction event
+     * @param roleName name of the role
+     * @return the role
+     */
+    private Mono<Role> getRoleByName(ModalSubmitInteractionEvent event, String roleName) {
+        return event.getClient().getGuildById(Snowflake.of(guildId))
+                .flatMap(guild -> guild.getRoles()
+                        .filter(role -> role.getName().equalsIgnoreCase(roleName))
+                        .next());
+    } //end getRoleByName()
+
 }
