@@ -33,15 +33,14 @@ public class LinksInputButtonListener implements EventListener<ButtonInteraction
                 .title("Enter links")
                 .customId(meetingId)
                 // customId prevents conflict of reference
-                .addComponent(ActionRow.of(TextInput.small(meetingId + "agenda", "Agenda link:")))
-                .addComponent(ActionRow.of(TextInput.small(meetingId + "minutes", "Minutes link:")))
+                .addComponent(ActionRow.of(TextInput.small(meetingId + "agenda", "Agenda link:").required(false)))
+                .addComponent(ActionRow.of(TextInput.small(meetingId + "minutes", "Minutes link:").required(false)))
                 .build();
         return event.presentModal(modalSpec);
     }
 
     @Override
     public Mono<Void> handleError(Throwable error) {
-        LOG.error("Unable to process {}", getEventType().getSimpleName(), error);
-        return Mono.empty();
+        return EventListener.super.handleError(error);
     }
 }

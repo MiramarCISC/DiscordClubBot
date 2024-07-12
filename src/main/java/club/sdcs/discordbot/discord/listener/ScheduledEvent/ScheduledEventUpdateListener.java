@@ -38,8 +38,7 @@ public class ScheduledEventUpdateListener implements EventListener<ScheduledEven
     }
 
     public Mono<Void> processEvent(ScheduledEventUpdateEvent event) {
-        return updatedMeeting(event)
-                .flatMap(meeting -> sendScheduledEventUpdateMessage(event, meeting));
+        return updatedMeeting(event).then();
     }
 
     private Mono<Meeting> updatedMeeting(ScheduledEventUpdateEvent updatedEvent) {
@@ -63,14 +62,6 @@ public class ScheduledEventUpdateListener implements EventListener<ScheduledEven
                                 return Mono.fromRunnable(() -> meetingService.updateMeeting(meeting)).thenReturn(meeting);
                             });
                 });
-    }
-
-    private Mono<Void> sendScheduledEventUpdateMessage(ScheduledEventUpdateEvent event, Meeting meeting) {
-        return event.getGuild()
-                .flatMap(guild -> guild.getChannelById(Snowflake.of(CHANNEL_ID))
-                        .ofType(MessageChannel.class))
-                .flatMap(channel -> channel.createMessage(meeting.toDiscordFormatEmbed()))
-                .then();
     }
 
     @Override

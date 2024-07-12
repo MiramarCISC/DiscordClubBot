@@ -1,41 +1,35 @@
 package club.sdcs.discordbot.discord.command.prefix.meeting;
 
-import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.service.MeetingService;
 import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import java.util.Arrays;
+
 import java.util.List;
 
 @Component
-public class MeetingIdListCommand implements PrefixCommand {
-
-    private final MeetingService meetingService;
+public class MeetingIdListCommand extends AbstractMeetingListCommand {
 
     public MeetingIdListCommand(MeetingService meetingService) {
-        this.meetingService = meetingService;
+        super(meetingService);
     }
 
     @Override
-    public String getName() {
+    protected String getCommandName() {
         return "!meeting id";
     }
 
     @Override
-    public String getDescription() {
+    protected String getCommandDescription() {
         return "Lists IDs of all active and scheduled meetings.";
     }
 
     @Override
-    public Mono<Void> handle(Message message) {
-        List<Meeting.Status> statuses = Arrays.asList(Meeting.Status.ACTIVE, Meeting.Status.SCHEDULED);
-        List<Meeting> meetings = meetingService.getMeetingsByStatuses(statuses);
-
-        return message.getChannel()
-                .flatMap(channel -> channel.createMessage(printList(meetings))
-                        .then());
+    protected Mono<Void> handleMeeting(Message message, List<Meeting> meetings) {
+        return message.getChannel().flatMap(channel ->
+                channel.createMessage(printList(meetings)).then()
+        );
     }
 
     private String printList(List<Meeting> meetings) {

@@ -26,6 +26,14 @@ public class MeetingRemindCommand implements PrefixCommand {
 
     @Override
     public Mono<Void> handle(Message message) {
-        return meetingManager.checkMeetings();
+        return meetingManager.checkMeetings().flatMap(hasIncompleteLinks -> {
+            if (hasIncompleteLinks) {
+                return Mono.empty();
+            } else {
+                return message.getChannel().flatMap(channel ->
+                        channel.createMessage("There are no meetings with incomplete agenda or minutes links.")
+                ).then();
+            }
+        });
     }
 }

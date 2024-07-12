@@ -29,16 +29,25 @@ public class ModalSubmitListener implements EventListener<ModalSubmitInteraction
     public Mono<Void> execute(ModalSubmitInteractionEvent event) {
         String customId = event.getCustomId();
 
-        String agendaLink = "";
-        String minutesLink = "";
+        // Retrieve previous links in case user input is left empty
+        Meeting meeting = meetingService.findMeetingById(Long.parseLong(customId));
+
+        // Retrieve previous links in case user input is left empty
+        String agendaLink = meeting.getAgendaLink();
+        String minutesLink = meeting.getMinutesLink();
 
         // Unliked way of retrieving modal values
         for (TextInput component : event.getComponents(TextInput.class)) {
-            String value = component.getValue().orElse("");
-            if ((customId + "agenda").equals(component.getCustomId())) {
-                agendaLink = value;
-            } else if ((customId + "minutes").equals(component.getCustomId())) {
-                minutesLink = value;
+            String inputId = component.getCustomId();
+            String value = component.getValue().orElse("").trim();
+
+            // Ensures no unwanted overwriting of link string
+            if (!value.isEmpty()) {
+                if ((customId + "agenda").equals(inputId)) {
+                    agendaLink = value;
+                } else if ((customId + "minutes").equals(inputId)) {
+                    minutesLink = value;
+                }
             }
         }
 

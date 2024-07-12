@@ -43,30 +43,36 @@ public class MeetingManager {
     /**
      * Checks meetings and sends reminders.
      */
-    public Mono<Void> checkMeetings() {
-        List<Meeting.Status> statuses = List.of(Meeting.Status.SCHEDULED);
-        List<Meeting> scheduledMeetings = meetingService.getMeetingsByStatuses(statuses);
-        List<User> officers = userService.getOfficers();
-        LocalDateTime now = LocalDateTime.now();
+    public Mono<Boolean> checkMeetings() {
+        return Mono.defer(() -> {
+            List<Meeting.Status> statuses = List.of(Meeting.Status.SCHEDULED);
+            List<Meeting> scheduledMeetings = meetingService.getMeetingsByStatuses(statuses);
+            List<User> officers = userService.getOfficers();
+            LocalDateTime now = LocalDateTime.now();
+            boolean hasIncompleteLinks = false;
 
-        return Mono.fromRunnable(() -> {
-            scheduledMeetings.forEach(meeting -> {
+            for (Meeting meeting : scheduledMeetings) {
                 LocalDateTime meetingStartTime = meeting.getStartTime();
                 String reminderMsg = reminderMessage(meeting);
 
-                // Channel reminder 1 day before due date
-                if (isMeetingDueInADay(meetingStartTime, now)) {
-                    sendChannelReminder(reminderMsg);
-                    // DM reminder if links are not filled
-                    if (meeting.getAgendaLink() == null || meeting.getAgendaLink().isEmpty() ||
-                            meeting.getMinutesLink() == null || meeting.getMinutesLink().isEmpty()) {
+                if ((meeting.getAgendaLink() == null || meeting.getAgendaLink().isEmpty() ||
+                        meeting.getMinutesLink() == null || meeting.getMinutesLink().isEmpty())) {
+                    hasIncompleteLinks = true;
+
+                    // Channel reminder 1 day before due date
+                    if (isMeetingDueInADay(meetingStartTime, now)) {
+                        sendChannelReminder(reminderMsg);
+                        // DM reminder if links are not filled
                         sendDMReminder(officers, reminderMsg);
                     }
-                } // Check if the meeting is due in a week
-                else if (isMeetingDueInAWeek(meetingStartTime, now) || isMeetingCreatedWithinAWeekOfStart(meetingStartTime, now)) {
-                    sendChannelReminder(reminderMsg);
+                    // Check if the meeting is due in a week
+                    else if (isMeetingDueInAWeek(meetingStartTime, now) || isMeetingCreatedWithinAWeekOfStart(meetingStartTime, now)) {
+                        sendChannelReminder(reminderMsg);
+                    }
                 }
-            });
+            }
+
+            return Mono.just(hasIncompleteLinks);
         });
     }
 
@@ -88,12 +94,10 @@ public class MeetingManager {
         return meetingStartTime.isAfter(now) && meetingStartTime.isBefore(oneDayFromNow);
     }
 
-
     private String reminderMessage(Meeting meeting) {
         StringBuilder message = new StringBuilder();
         String agendaLinkString = "<" + meeting.getAgendaLink() + ">";
         String minutesLinkString = "<" + meeting.getMinutesLink() + ">";
-
 
         if (meeting.getAgendaLink() == null || meeting.getAgendaLink().isEmpty()) {
             message.append("- Agenda link has not been entered ❌ \n");

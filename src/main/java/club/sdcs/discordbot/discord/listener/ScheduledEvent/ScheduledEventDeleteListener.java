@@ -31,9 +31,10 @@ public class ScheduledEventDeleteListener implements EventListener<ScheduledEven
     // Updates status changed event in DB
     public Mono<Void> processEvent(ScheduledEventDeleteEvent event) {
         Meeting meeting = meetingService.findMeetingById(event.getScheduledEvent().getId().asLong());
-        meeting.setStatus(4); // CANCELLED status
-        meetingService.updateMeeting(meeting);
-
+        if (meeting != null) {
+            meeting.setStatus(4); // CANCELLED status
+            meetingService.updateMeeting(meeting);
+        }
         return Mono.empty();
     }
 
