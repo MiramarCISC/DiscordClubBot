@@ -6,6 +6,8 @@ import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 public class EmbedUtils {
 
     /**
@@ -52,4 +54,14 @@ public class EmbedUtils {
                         .build()
         ).then();
     } //end createEmbedMessage()
+
+
+    public static Mono<EmbedCreateSpec> createEmbedMessage(String title, String description) {
+        return Mono.just(EmbedCreateSpec.builder()
+                .title(title)
+                .description(description)
+                .color(Color.SUMMER_SKY)
+                .build());
+    }
+
 }

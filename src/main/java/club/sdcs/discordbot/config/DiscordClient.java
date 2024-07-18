@@ -55,8 +55,17 @@ public class DiscordClient {
                     .description("Register for SDCS Club membership")
                     .build();
 
+            ApplicationCommandRequest rollCallCommandRequest = ApplicationCommandRequest.builder()
+                    .name("rollcall")
+                    .description("Take meeting roll call")
+                    .build();
+
             client.getRestClient().getApplicationService()
                     .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), membershipCommandRequest)
+                    .subscribe();
+
+            client.getRestClient().getApplicationService()
+                    .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), rollCallCommandRequest)
                     .subscribe();
         }
 
