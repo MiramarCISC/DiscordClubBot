@@ -1,6 +1,7 @@
 package club.sdcs.discordbot.service;
 
 import club.sdcs.discordbot.model.Meeting;
+import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.repository.MeetingRepository;
 import org.springframework.stereotype.Service;
 import java.util.Arrays;
@@ -40,5 +41,9 @@ public class MeetingService {
         } else {
             throw new IllegalArgumentException("Meeting with ID " + meeting.getMeetingId() + " does not exist.");
         }
+    }
+
+    public List<User> findUserAttendanceByMeetingId(long id) {
+        return meetingRepository.findById(id).getUserAttendance();
     }
 }

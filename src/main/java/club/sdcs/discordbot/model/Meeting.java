@@ -8,6 +8,8 @@ import discord4j.rest.util.Color;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="meeting")
@@ -33,6 +35,9 @@ public class Meeting extends Auditable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> users = new ArrayList<>();
+
     public Meeting() {}
 
     public Meeting(long meetingId, String name, String description, String location, LocalDateTime startTime, LocalDateTime endTime, String agendaLink, String minutesLink, boolean isQuorumMet, Status status) {
@@ -46,6 +51,7 @@ public class Meeting extends Auditable {
         this.minutesLink = minutesLink;
         this.isQuorumMet = isQuorumMet;
         this.status = status;
+
     }
 
     public long getMeetingId() {
@@ -198,5 +204,13 @@ public class Meeting extends Auditable {
                 .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), // unique button per meeting obj
                         "input agenda/minutes link")))
                 .build();
+    }
+
+    public void addUserToMeeting(User user) {
+        users.add(user);
+    }
+
+    public List<User> getUserAttendance() {
+        return users;
     }
 }
