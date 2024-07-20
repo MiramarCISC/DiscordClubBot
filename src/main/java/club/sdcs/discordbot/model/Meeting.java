@@ -35,7 +35,7 @@ public class Meeting extends Auditable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
     public Meeting() {}
@@ -94,6 +94,14 @@ public class Meeting extends Auditable {
 
     public void setEndTime(LocalDateTime timeEnd) {
         this.endTime = timeEnd;
+    }
+
+    public String getFormattedMeetingDate() {
+        if (startTime != null) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // You can change the pattern as needed
+            return startTime.toLocalDate().format(dateFormatter);
+        }
+        return "N/A";
     }
 
     public String getAgendaLink() {
@@ -207,7 +215,12 @@ public class Meeting extends Auditable {
     }
 
     public void addUserToMeeting(User user) {
+        System.out.println(user.getDiscordName());
         users.add(user);
+    }
+
+    public void removeUserFromMeeting(User user) {
+        users.remove(user);
     }
 
     public List<User> getUserAttendance() {

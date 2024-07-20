@@ -43,7 +43,4 @@ public class MeetingService {
         }
     }
 
-    public List<User> findUserAttendanceByMeetingId(long id) {
-        return meetingRepository.findById(id).getUserAttendance();
-    }
 }

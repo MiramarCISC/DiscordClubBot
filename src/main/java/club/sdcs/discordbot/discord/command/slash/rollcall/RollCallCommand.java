@@ -9,8 +9,6 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -32,10 +30,6 @@ public class RollCallCommand implements SlashCommand {
     public Mono<Void> handle(ChatInputInteractionEvent event) {
 
         //TODO: check for if user is officer
-
-        Meeting meeting1 = new Meeting(1322341, "e", "e", "e", LocalDateTime.MAX, LocalDateTime.MIN, "e", "e", false, Meeting.Status.ACTIVE);
-        meetingService.addMeeting(meeting1);
-
         List<Meeting> meetingList = meetingService.getMeetingsByStatus(Meeting.Status.ACTIVE);
 
         if (meetingList.isEmpty()) {
