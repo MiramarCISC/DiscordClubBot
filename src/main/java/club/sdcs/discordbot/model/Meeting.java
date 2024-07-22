@@ -6,6 +6,8 @@ import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.MessageCreateSpec;
 import discord4j.rest.util.Color;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ public class Meeting extends Auditable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<User> users = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Long> userIds = new ArrayList<>();
 
     public Meeting() {}
 
@@ -214,16 +216,15 @@ public class Meeting extends Auditable {
                 .build();
     }
 
-    public void addUserToMeeting(User user) {
-        System.out.println(user.getDiscordName());
-        users.add(user);
+    public void addUserToMeeting(long userId) {
+        userIds.add(userId);
     }
 
-    public void removeUserFromMeeting(User user) {
-        users.remove(user);
+    public void removeUserFromMeeting(long userId) {
+        userIds.remove(userId);
     }
 
-    public List<User> getUserAttendance() {
-        return users;
+    public List<Long> getUserAttendance() {
+        return userIds;
     }
 }

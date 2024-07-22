@@ -2,8 +2,10 @@ package club.sdcs.discordbot.discord.command.prefix.meeting;
 
 import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
 import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.MeetingService;
+import club.sdcs.discordbot.service.UserService;
 import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -14,9 +16,11 @@ import java.util.List;
 public class MeetingLogCommand implements PrefixCommand {
 
     private final MeetingService meetingService;
+    private final UserService userService;
 
-    public MeetingLogCommand(MeetingService meetingService) {
+    public MeetingLogCommand(MeetingService meetingService, UserService userService) {
         this.meetingService = meetingService;
+        this.userService = userService;
     }
 
     @Override
@@ -50,10 +54,17 @@ public class MeetingLogCommand implements PrefixCommand {
 
         }
 
-        List<User> users = meetingService.findMeetingById(meetingId).getUserAttendance();
+        Meeting meeting = meetingService.findMeetingById(meetingId);
+        if (meeting == null) {
+            return message.getChannel()
+                    .flatMap(channel -> channel.createMessage("That meeting does not exist. Try again."))
+                    .then();
+        }
+
+        List<Long> users = meeting.getUserAttendance();
         String userList = formatUserList(users);
 
-        return EmbedUtils.createEmbedMessage(message, "Meeting Attendance Log For: " + meetingService.findMeetingById(meetingId).getName(),
+        return EmbedUtils.createEmbedMessage(message, "Meeting Attendance Log For: " + meeting.getName(),
                 userList).then();
 
     }
@@ -63,13 +74,14 @@ public class MeetingLogCommand implements PrefixCommand {
      * @param users takes in list of users attended
      * @return formatted user list
      */
-    private String formatUserList(List<User> users) {
+    private String formatUserList(List<Long> users) {
         if (users.isEmpty()) {
             return "No attendees.";
         }
 
         StringBuilder userList = new StringBuilder();
-        for (User user : users) {
+        for (Long userId : users) {
+            User user = userService.getUserByDiscordId(userId);
             userList.append("○ ").append(user.getFullName()).append(" (").append(user.getDiscordName()).append(")").append("\n");
         }
         return userList.toString();

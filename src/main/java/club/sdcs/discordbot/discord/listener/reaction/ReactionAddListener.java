@@ -34,10 +34,17 @@ public class ReactionAddListener implements EventListener<ReactionAddEvent> {
         if (eventId.equals("✅")) {
             return event.getUser()
                     .flatMap(user -> {
+                        Meeting meeting = meetingService.findMeetingById(RollCallCommand.meetingId);
+
                         if (user.isBot()) {
                             return Mono.empty();
+                        } else if (meeting.getStatus().equals(Meeting.Status.COMPLETED)) {
+                            return event.getUser()
+                                    .flatMap(discord4j.core.object.entity.User::getPrivateChannel)
+                                    .flatMap(channel -> channel.createMessage("This meeting has ended already."))
+                                    .then();
                         }
-                        return handleReactionAdded(event);
+                        return handleReactionAdded(event, meeting);
                     });
         } else {
             return event.getMessage()
@@ -51,11 +58,14 @@ public class ReactionAddListener implements EventListener<ReactionAddEvent> {
      * @param event the reaction
      * @return either bot message or nothing
      */
-    private Mono<Void> handleReactionAdded(ReactionAddEvent event) {
-
+    private Mono<Void> handleReactionAdded(ReactionAddEvent event, Meeting meeting) {
         return event.getUser().flatMap(user -> {
             User dbUser = userService.getUserByDiscordId(event.getUserId().asLong());
-            if (dbUser == null) {
+
+            if (dbUser != null) {
+                meeting.addUserToMeeting(event.getUserId().asLong());
+                meetingService.updateMeeting(meeting);
+            } else {
                 return event.getMessage()
                         .flatMap(message -> message.removeReaction(event.getEmoji(), event.getUserId()))
                         .then(user.getPrivateChannel()
@@ -63,9 +73,6 @@ public class ReactionAddListener implements EventListener<ReactionAddEvent> {
                         .then();
             }
 
-            Meeting meeting = meetingService.findMeetingById(RollCallCommand.meetingId);
-            meeting.addUserToMeeting(dbUser);
-            meetingService.updateMeeting(meeting);
 
             return Mono.empty();
         }); //end handleReaction()
