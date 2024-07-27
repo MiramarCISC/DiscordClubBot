@@ -82,7 +82,15 @@ public class MeetingLogCommand implements PrefixCommand {
         StringBuilder userList = new StringBuilder();
         for (Long userId : users) {
             User user = userService.getUserByDiscordId(userId);
-            userList.append("○ ").append(user.getFullName()).append(" (").append(user.getDiscordName()).append(")").append("\n");
+            userList.append("○ ")
+                    .append(user.getFullName())
+                    .append(" (")
+                    .append(user.getDiscordName())
+                    .append(")")
+                    .append(" (")
+                    .append(user.getDistrictId())
+                    .append(")")
+                    .append("\n");
         }
         return userList.toString();
     }

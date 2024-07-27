@@ -12,6 +12,7 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,35 +33,59 @@ public class RollCallCommand implements SlashCommand {
 
     @Override
     public Mono<Void> handle(ChatInputInteractionEvent event) {
+
+        Optional<String> meetingIdOptional = event.getOption("meeting_id")
+                .flatMap(option -> option.getValue().map(value -> value.asString()));
+
         return event.getInteraction().getGuild()
                 .flatMap(guild -> event.getInteraction().getMember()
-                        .map(member -> handleRollCall(event, guild, member))
+                        .map(member -> handleRollCall(event, guild, member, meetingIdOptional))
                         .orElseGet(() -> event.reply("An error has occurred. Please try again.")));
     }
 
-    private Mono<Void> handleRollCall(ChatInputInteractionEvent event, Guild guild, Member member) {
+    private Mono<Void> handleRollCall(ChatInputInteractionEvent event, Guild guild, Member member, Optional<String> meetingIdOptional) {
         return isOfficer(member, guild).flatMap(isOfficer -> {
             if (!isOfficer) {
                 return event.reply("You must be an officer to initiate roll call.");
             }
 
-            List<Meeting> meetingList = meetingService.getMeetingsByStatus(Meeting.Status.ACTIVE);
-            if (meetingList.isEmpty()) {
-                return event.reply("Cannot initiate roll call. There is no current meeting active.");
+            if (meetingIdOptional.isPresent()) {
+                meetingId = Long.parseLong(meetingIdOptional.get());
+
+            } else {
+                List<Meeting> meetingList = meetingService.getMeetingsByStatus(Meeting.Status.ACTIVE);
+                if (meetingList.isEmpty()) {
+                    return event.reply("Cannot initiate roll call. No meeting active.").withEphemeral(true);
+                }
+                meetingId = meetingList.getFirst().getMeetingId();
+
             }
-
-            meetingList.forEach(meeting -> meetingId = meeting.getMeetingId());
-
-            Mono<EmbedCreateSpec> embedMessage = EmbedUtils.createEmbedMessage(
-                    "Roll Call for Meeting: " + meetingService.findMeetingById(meetingId).getName(),
-                    "React to this message to confirm that you are attending this meeting."
-            );
-
-            return embedMessage.flatMap(embed -> event.reply().withEmbeds(embed))
-                    .then(event.getReply().flatMap(message -> message.addReaction(ReactionEmoji.unicode("✅"))));
+            return handleRollCallForMeeting(event, meetingId);
         });
     }
 
+    private Mono<Void> handleRollCallForMeeting(ChatInputInteractionEvent event, long meetingId) {
+
+        if (!meetingService.findMeetingById(meetingId).getStatus().equals(Meeting.Status.ACTIVE)) {
+            return event.reply("Cannot initiate roll call. The meeting is not active.").withEphemeral(true);
+        }
+
+        String meetingName;
+
+        try {
+            meetingName = meetingService.findMeetingById(meetingId).getName();
+        } catch (Exception e) {
+            return event.reply("That meeting does not exist or has not been started.").withEphemeral(true);
+        }
+
+        Mono<EmbedCreateSpec> embedMessage = EmbedUtils.createEmbedMessage(
+                "Roll Call for Meeting: " + meetingName,
+                "React to this message to confirm that you are attending this meeting."
+        );
+
+        return embedMessage.flatMap(embed -> event.reply().withEmbeds(embed))
+                .then(event.getReply().flatMap(message -> message.addReaction(ReactionEmoji.unicode("✅"))));
+    }
 
     /**
      * checks if user who types command is officer
