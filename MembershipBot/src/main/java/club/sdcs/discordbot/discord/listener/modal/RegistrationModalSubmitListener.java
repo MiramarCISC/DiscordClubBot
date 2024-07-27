@@ -1,6 +1,6 @@
 package club.sdcs.discordbot.discord.listener.modal;
 
-import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.discord.command.slash.EmbedUtils;
 import club.sdcs.discordbot.discord.command.slash.membership.InformationProcessor;
 import club.sdcs.discordbot.discord.listener.EventListener;
 import club.sdcs.discordbot.model.User;

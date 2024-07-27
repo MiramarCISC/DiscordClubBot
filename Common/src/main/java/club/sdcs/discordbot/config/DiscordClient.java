@@ -5,6 +5,8 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
+import discord4j.core.object.command.ApplicationCommandOption;
+import discord4j.discordjson.json.ApplicationCommandOptionData;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.gateway.intent.IntentSet;
 import org.slf4j.Logger;
@@ -55,8 +57,23 @@ public class DiscordClient {
                     .description("Register for SDCS Club membership")
                     .build();
 
+            ApplicationCommandRequest rollCallCommandRequest = ApplicationCommandRequest.builder()
+                    .name("rollcall")
+                    .description("Take meeting roll call")
+                    .addOption(ApplicationCommandOptionData.builder()
+                            .name("meeting_id")
+                            .description("ID of the meeting to start roll call for")
+                            .type(ApplicationCommandOption.Type.STRING.getValue())
+                            .required(false)
+                            .build())
+                    .build();
+
             client.getRestClient().getApplicationService()
                     .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), membershipCommandRequest)
+                    .subscribe();
+
+            client.getRestClient().getApplicationService()
+                    .createGuildApplicationCommand(client.getSelfId().asLong(), guildSnowflake.asLong(), rollCallCommandRequest)
                     .subscribe();
         }
 

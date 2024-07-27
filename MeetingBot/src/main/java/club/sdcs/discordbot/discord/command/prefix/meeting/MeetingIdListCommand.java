@@ -1,5 +1,6 @@
 package club.sdcs.discordbot.discord.command.prefix.meeting;
 
+import club.sdcs.discordbot.discord.command.slash.EmbedUtils;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.service.MeetingService;
 import discord4j.core.object.entity.Message;
@@ -22,21 +23,25 @@ public class MeetingIdListCommand extends AbstractMeetingListCommand {
 
     @Override
     protected String getCommandDescription() {
-        return "Lists IDs of all active and scheduled meetings.";
+        return "Lists IDs of meetings completed, scheduled, or active.";
     }
 
     @Override
     protected Mono<Void> handleMeeting(Message message, List<Meeting> meetings) {
-        return message.getChannel().flatMap(channel ->
-                channel.createMessage(printList(meetings)).then()
-        );
+        return EmbedUtils.createEmbedMessage(message, "Meeting ID Logs", printList(meetings)).then();
     }
 
     private String printList(List<Meeting> meetings) {
         StringBuilder list = new StringBuilder();
         for (Meeting meeting : meetings) {
-            list.append(meeting.getName()).append(":\t`").append(meeting.getMeetingId()).
-                    append("` \n");
+            list.append(meeting.getName())
+                    .append(" (")
+                    .append(meeting.getStatus().toString())
+                    .append(" ")
+                    .append(meeting.getFormattedMeetingDate()).append(") ")
+                    .append(":\t`")
+                    .append(meeting.getMeetingId())
+                    .append("` \n");
         }
         return list.toString();
     }

@@ -34,12 +34,12 @@ public abstract class AbstractMeetingListCommand implements PrefixCommand {
 
     @Override
     public Mono<Void> handle(Message message) {
-        List<Meeting.Status> statuses = Arrays.asList(Meeting.Status.ACTIVE, Meeting.Status.SCHEDULED);
+        List<Meeting.Status> statuses = Arrays.asList(Meeting.Status.ACTIVE, Meeting.Status.SCHEDULED, Meeting.Status.COMPLETED);
         List<Meeting> meetings = meetingService.getMeetingsByStatuses(statuses);
         return message.getChannel()
                 .flatMap(channel -> {
                     if (meetings.isEmpty()) {
-                        return channel.createMessage("No active or scheduled meetings.");
+                        return channel.createMessage("No meetings found.");
                     } else {
                         return handleMeeting(message, meetings);
                     }

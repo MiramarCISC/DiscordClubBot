@@ -25,7 +25,7 @@ public class SlashCommandListener {
         //Convert our list to a flux that we can iterate through
         return Flux.fromIterable(commands)
                 //Filter out all commands that don't match the name this event is for
-                .filter(command -> command.getName().equals(event.getCommandName()))
+                .filter(command -> command.getName().startsWith(event.getCommandName()))
                 //Get the first (and only) item in the flux that matches our filter
                 .next()
                 //Have our command class handle all logic related to its specific command.

@@ -1,6 +1,6 @@
 package club.sdcs.discordbot.discord.listener;
 
-import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.discord.command.slash.EmbedUtils;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.object.entity.channel.MessageChannel;

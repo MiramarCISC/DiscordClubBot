@@ -6,8 +6,12 @@ import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.MessageCreateSpec;
 import discord4j.rest.util.Color;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="meeting")
@@ -33,6 +37,9 @@ public class Meeting extends Auditable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Long> userIds = new ArrayList<>();
+
     public Meeting() {}
 
     public Meeting(long meetingId, String name, String description, String location, LocalDateTime startTime, LocalDateTime endTime, String agendaLink, String minutesLink, boolean isQuorumMet, Status status) {
@@ -46,6 +53,7 @@ public class Meeting extends Auditable {
         this.minutesLink = minutesLink;
         this.isQuorumMet = isQuorumMet;
         this.status = status;
+
     }
 
     public long getMeetingId() {
@@ -88,6 +96,14 @@ public class Meeting extends Auditable {
 
     public void setEndTime(LocalDateTime timeEnd) {
         this.endTime = timeEnd;
+    }
+
+    public String getFormattedMeetingDate() {
+        if (startTime != null) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // You can change the pattern as needed
+            return startTime.toLocalDate().format(dateFormatter);
+        }
+        return "N/A";
     }
 
     public String getAgendaLink() {
@@ -198,5 +214,17 @@ public class Meeting extends Auditable {
                 .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), // unique button per meeting obj
                         "input agenda/minutes link")))
                 .build();
+    }
+
+    public void addUserToMeeting(long userId) {
+        userIds.add(userId);
+    }
+
+    public void removeUserFromMeeting(long userId) {
+        userIds.remove(userId);
+    }
+
+    public List<Long> getUserAttendance() {
+        return userIds;
     }
 }

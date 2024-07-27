@@ -3,7 +3,6 @@ package club.sdcs.discordbot.service;
 import club.sdcs.discordbot.model.Meeting;
 import club.sdcs.discordbot.repository.MeetingRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

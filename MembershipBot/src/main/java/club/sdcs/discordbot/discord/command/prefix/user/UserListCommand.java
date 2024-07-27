@@ -1,7 +1,7 @@
 package club.sdcs.discordbot.discord.command.prefix.user;
 
 import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
-import club.sdcs.discordbot.discord.command.slash.membership.EmbedUtils;
+import club.sdcs.discordbot.discord.command.slash.EmbedUtils;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;

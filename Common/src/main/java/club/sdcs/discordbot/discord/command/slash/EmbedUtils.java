@@ -1,4 +1,4 @@
-package club.sdcs.discordbot.discord.command.slash.membership;
+package club.sdcs.discordbot.discord.command.slash;
 
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
@@ -52,4 +52,14 @@ public class EmbedUtils {
                         .build()
         ).then();
     } //end createEmbedMessage()
+
+
+    public static Mono<EmbedCreateSpec> createEmbedMessage(String title, String description) {
+        return Mono.just(EmbedCreateSpec.builder()
+                .title(title)
+                .description(description)
+                .color(Color.SUMMER_SKY)
+                .build());
+    }
+
 }
