@@ -65,6 +65,7 @@ public class ReactionAddListener implements EventListener<ReactionAddEvent> {
             if (dbUser != null) {
                 meeting.addUserToMeeting(event.getUserId().asLong());
                 meetingService.updateMeeting(meeting);
+                dbUser.addAttendance(meeting.getStartTime());
             } else {
                 return event.getMessage()
                         .flatMap(message -> message.removeReaction(event.getEmoji(), event.getUserId()))

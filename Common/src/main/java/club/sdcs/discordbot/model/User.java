@@ -3,6 +3,10 @@ package club.sdcs.discordbot.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -47,6 +51,9 @@ public class User extends Auditable {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Status status;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> attendanceLog = new ArrayList<>();
 
     public User(){}
 
@@ -149,4 +156,14 @@ public class User extends Auditable {
     public Status getStatus() { return status; }
 
     public void setStatus(Status status) { this.status = status; }
+
+    public void addAttendance(LocalDateTime date) {
+        attendanceLog.add(date.toString());
+    }
+
+    public void removeAttendance(LocalDateTime date) {
+        attendanceLog.remove(date.toString());
+    }
+
+    public List<String> getAttendanceLog() { return attendanceLog; }
 }

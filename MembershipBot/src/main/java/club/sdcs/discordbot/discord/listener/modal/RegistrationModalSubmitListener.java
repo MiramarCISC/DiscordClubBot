@@ -82,8 +82,7 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
             errorMessage.append(" Try again.");
             return event.reply(String.valueOf(errorMessage));
         } else {
-            return updateUserRole(event, currentUser, discordID)
-                    .then(endRegistrationProcess(event, currentUser))
+            return endRegistrationProcess(event, currentUser)
                     .then(event.edit().withEmbeds(EmbedCreateSpec.builder()
                                     .title("User Information Completed")
                                     .color(Color.SUMMER_SKY)
@@ -116,12 +115,16 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
                             Mono<Void> addRole = member.addRole(role.getId());
                             if (optInActive) {
                                 user.setRole(User.Role.ACTIVE);
+                                userService.addUser(user);
                             }
 
                             if (optInVoter) {
                                 return getRoleByName(event, "Voter")
                                         .flatMap(voterRole -> addRole.then(member.addRole(voterRole.getId())));
+
                             } else {
+                                user.setRole(User.Role.INACTIVE);
+                                userService.addUser(user);
                                 return addRole;
                             }
                         }));
@@ -135,19 +138,18 @@ public class RegistrationModalSubmitListener implements EventListener<ModalSubmi
      */
     private Mono<Void> endRegistrationProcess(ModalSubmitInteractionEvent event, User user) {
         user.setDiscordId(event.getInteraction().getUser().getId().asLong());
-
         user.setDiscordName(event.getInteraction().getUser().getUsername());
         user.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         user.setStatus(User.Status.REGISTERED);
 
-        userService.addUser(user);
-
-        return event.getInteraction().getUser().getPrivateChannel()
+        return updateUserRole(event, user, event.getInteraction().getUser().getId().asString())
+                .then(event.getInteraction().getUser().getPrivateChannel()
                 .flatMap(channel -> EmbedUtils.createEmbedMessage(channel, "User Information", "This is all the information you have saved" +
                         " to the SDCS Club.\n\nName: **" + user.getFullName() + "**\nEmail: **" + user.getEmail() + "**\nDistrict ID: **" +
                         user.getDistrictId() + "**\nPhone Number: **" + user.getMobileNumber() + "**\nRole: **" + user.getRole() + "**\n\nIf at anytime you wish to **update** your details, please" +
                         "\nrefer to the following **command** and answer in this **DM**. You do not have the ability to update your role. That is entirely dependent\non your participation in the club and is subject to change.\n\n**`!user edit [insert_field_name] [insert_information]`**\n\nExamples Provided Below:\n",
-                        "https://i.imgur.com/mOB0kaf.png"));
+                        "https://i.imgur.com/mOB0kaf.png"))
+                        .then());
     } //end endRegistrationProcess()
 
     /**
