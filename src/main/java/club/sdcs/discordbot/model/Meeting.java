@@ -195,7 +195,7 @@ public class Meeting extends Auditable {
         EmbedCreateSpec embed = createEmbedBuilder().build();
         return MessageCreateSpec.builder()
                 .addEmbed(embed)
-                .addComponent(ActionRow.of(Button.primary(String.valueOf(meetingId), // unique button per meeting obj
+                .addComponent(ActionRow.of(Button.primary("meeting-" + meetingId, // unique button per meeting obj
                         "input agenda/minutes link")))
                 .build();
     }
