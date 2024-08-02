@@ -1,7 +1,9 @@
 package club.sdcs.discordbot.repository;
 
 import club.sdcs.discordbot.model.Nomination;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NominationRepository extends CrudRepository<Nomination, Long> {
+public interface NominationRepository extends JpaRepository<Nomination, Long> {
+    public Nomination findByNominationId(Long id);
+    public Nomination findByMessageId(long messageId);
 }
