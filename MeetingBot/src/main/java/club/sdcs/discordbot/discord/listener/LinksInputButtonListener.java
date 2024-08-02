@@ -22,11 +22,16 @@ public class LinksInputButtonListener implements EventListener<ButtonInteraction
 
     @Override
     public Mono<Void> execute(ButtonInteractionEvent event) {
-        return showModal(event);
+        String meetingId = event.getCustomId();
+
+        if (meetingId.startsWith("meeting-")) {
+            return showModal(event);
+        }
+        return Mono.empty();
     }
 
     private Mono<Void> showModal(ButtonInteractionEvent event) {
-        String meetingId = event.getCustomId();
+        String meetingId = event.getCustomId().replaceFirst("meeting-", "");
 
         if (!meetingId.equalsIgnoreCase("start_registration") && !meetingId.startsWith("optin") && !meetingId.equalsIgnoreCase("registration_form")) {
             InteractionPresentModalSpec modalSpec = InteractionPresentModalSpec.builder()

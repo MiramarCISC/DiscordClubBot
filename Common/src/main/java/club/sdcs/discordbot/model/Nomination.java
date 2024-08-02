@@ -1,7 +1,6 @@
 package club.sdcs.discordbot.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -9,16 +8,17 @@ public class Nomination extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long nominationId;
-    @OneToOne
+    @ManyToOne
     private User nominator;
-    @OneToOne
+    @ManyToOne
     private User second;
-    @OneToOne
+    @ManyToOne
     private User nominee;
-    private LocalDateTime startTime;
+    private LocalDateTime startTime = LocalDateTime.now();
     private LocalDateTime endTime;
-    private boolean isPassed;
+    private boolean isPassed = false;
     private User.Role role;
+    private long messageId;
 
     public Nomination() {}
 
@@ -95,6 +95,14 @@ public class Nomination extends Auditable {
 
     public void setRole(User.Role role) {
         this.role = role;
+    }
+
+    public long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(long messageId) {
+        this.messageId = messageId;
     }
 
     @Override
