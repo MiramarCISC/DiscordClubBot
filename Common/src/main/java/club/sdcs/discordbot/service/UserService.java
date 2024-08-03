@@ -40,9 +40,8 @@ public class UserService {
         return userRepository.findByRoleIn(officerRoles);
     }
 
-    public List<User> getAllActiveUsers() {
-        List<User.Role> activeRoles = List.of(User.Role.ACTIVE);
-        return userRepository.findByRoleIn(activeRoles);
-
+    public List<User> getAllUsers() {
+        List<User.Role> allUsers = List.of(User.Role.ACTIVE, User.Role.INACTIVE);
+        return userRepository.findByRoleIn(allUsers);
     }
 }

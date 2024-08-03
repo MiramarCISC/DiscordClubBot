@@ -21,14 +21,19 @@ import java.util.List;
 @Service
 public class MembershipService {
 
-    private final UserService userService;
-    private final GatewayDiscordClient gatewayClient;
-    private static final long ONE_MONTH_MILLIS = 30L * 24 * 60 * 60 * 1000;
-    private static final long ONE_HOUR_MILLIS = 60L * 60 * 1000;
-    private static final Logger LOG = LoggerFactory.getLogger(MembershipService.class);
-
     @Value("${spring.discord.server-id}")
     private long guildId;
+
+    @Value("${spring.discord.active.condition.num-meetings-attended}")
+    private int requiredMeetingsAttended;
+
+    @Value("${spring.discord.active.condition.in-past-num-days}")
+    private int pastNumDays;
+
+    private final UserService userService;
+    private final GatewayDiscordClient gatewayClient;
+    private static final long ONE_HOUR_MILLIS = 60L * 60 * 1000;
+    private static final Logger LOG = LoggerFactory.getLogger(MembershipService.class);
 
     public MembershipService(UserService userService, GatewayDiscordClient gatewayClient) {
         this.userService = userService;
@@ -36,12 +41,12 @@ public class MembershipService {
     }
 
     private List<User> getUsers() {
-        return userService.getAllActiveUsers();
+        return userService.getAllUsers();
     }
 
     @Scheduled(fixedRate = ONE_HOUR_MILLIS)
-    public void checkActiveUserStatus() {
-        LOG.info("Checking active users...");
+    public void checkUserStatus() {
+        LOG.info("Checking all users...");
 
         List<User> users = getUsers();
         LocalDateTime now = LocalDateTime.now();
@@ -55,7 +60,8 @@ public class MembershipService {
                         for (User user : users) {
                             boolean isActiveVoter = user.getAttendanceLog().stream()
                                     .map(dateString -> LocalDateTime.parse(dateString, formatter))
-                                    .anyMatch(date -> Duration.between(date, now).toMillis() < ONE_MONTH_MILLIS);
+                                    .filter(date -> Duration.between(date, now).toDays() < pastNumDays)
+                                    .count() >= requiredMeetingsAttended;
 
                             Member member = memberMap.get(Snowflake.of(user.getDiscordId()));
 
@@ -66,7 +72,7 @@ public class MembershipService {
                                             .flatMap(role -> addRoleToMember(member, role))
                                             .subscribe();
                                     getRoleByName(guildId, "Voter")
-                                            .flatMap(role -> removeRoleFromMember(member, role))
+                                            .flatMap(role -> addRoleToMember(member, role))
                                             .subscribe();
                                     getRoleByName(guildId, "Inactive")
                                             .flatMap(role -> removeRoleFromMember(member, role))
@@ -80,17 +86,23 @@ public class MembershipService {
                                             .flatMap(role -> removeRoleFromMember(member, role))
                                             .subscribe();
                                     getRoleByName(guildId, "Voter")
-                                            .flatMap(role -> removeRoleFromMember(member, role))
+                                            .flatMap(role -> {
+                                                if (member.getRoleIds().contains(role.getId())) {
+                                                    return removeRoleFromMember(member, role);
+                                                }
+                                                return Mono.empty();
+                                            })
                                             .subscribe();
                                 }
-                                LOG.info("Checking user {} role: {}", user, user.getRole().toString());
+                                LOG.info("Checked user {} role: {}", user, user.getRole().toString());
+                                userService.addUser(user);
                             }
                         }
                         return Mono.empty();
                     })
                     .subscribe();
         } else {
-            LOG.info("No active users found.");
+            LOG.info("No users found.");
         }
     }
 

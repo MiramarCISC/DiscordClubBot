@@ -12,6 +12,12 @@ spring:
     officer-channel-id: ${DISCORD_CHANNEL_ID}
     zone-id: ${ZONE_ID:America/Los_Angeles}
     scheduling: 0 0 9 * * ?
+    active:
+      check:
+        schedule: 0 0 9 * * ?
+      condition:
+        num-meetings-attended: 1
+        in-past-num-days: 30
   h2:
     console:
       enabled: true
