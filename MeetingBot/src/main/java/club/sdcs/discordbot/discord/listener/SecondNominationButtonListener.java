@@ -9,7 +9,6 @@ import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import java.util.List;
 
 @Component
 public class SecondNominationButtonListener implements EventListener<ButtonInteractionEvent> {
@@ -92,21 +91,14 @@ public class SecondNominationButtonListener implements EventListener<ButtonInter
         User secondUser = userService.getUserByDiscordId(secondUserId);
 
         if (secondUser == null) {
+            System.out.println("null secondUser");
             return false;
         }
 
-        if (nomination.getNominator().getDiscordId() == secondUserId) {
-            return false;
-        }
+        long nominatorId = nomination.getNominator().getDiscordId();
 
-        if (nomination.getNominee().getDiscordId() == secondUserId) {
-            return false;
-        }
-
-        List<User> officerRoles = userService.getOfficers();
-
-        // Check if the user is an officer
-        return officerRoles.stream().anyMatch(user -> user.getDiscordId() == secondUserId);
+        // A user cannot second if they are not the nominator
+        return secondUserId != nominatorId;
     }
 
     @Override
