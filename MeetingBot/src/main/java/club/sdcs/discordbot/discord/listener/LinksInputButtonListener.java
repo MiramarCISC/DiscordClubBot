@@ -1,6 +1,5 @@
-package club.sdcs.discordbot.discord.listener.button;
+package club.sdcs.discordbot.discord.listener;
 
-import club.sdcs.discordbot.discord.listener.EventListener;
 import club.sdcs.discordbot.model.Meeting;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.spec.InteractionPresentModalSpec;

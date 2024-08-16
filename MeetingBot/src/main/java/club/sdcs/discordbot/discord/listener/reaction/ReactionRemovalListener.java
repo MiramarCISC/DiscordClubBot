@@ -39,6 +39,9 @@ public class ReactionRemovalListener implements EventListener<ReactionRemoveEven
                         if (user.isBot()) {
                             return Mono.empty();
                         } else if (meeting.getStatus().equals(Meeting.Status.COMPLETED)) {
+                            User dbUser = userService.getUserByDiscordId(event.getUserId().asLong());
+                            dbUser.removeAttendance(meeting.getStartTime());
+
                             return event.getUser()
                                     .flatMap(discord4j.core.object.entity.User::getPrivateChannel)
                                     .flatMap(channel -> channel.createMessage("This meeting has ended already."))

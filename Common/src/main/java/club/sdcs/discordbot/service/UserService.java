@@ -10,16 +10,17 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public User addUser(User user) {
+
+    public void addUser(User user) {
         // TODO: validate user and throw exception if invalid
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public User getUserByDiscordId(long id) {
-
         System.out.println("User ID: " + id);
         return userRepository.findByDiscordId(id);
     }
@@ -37,5 +38,10 @@ public class UserService {
                 User.Role.ASG_REPRESENTATIVE
         );
         return userRepository.findByRoleIn(officerRoles);
+    }
+
+    public List<User> getAllUsers() {
+        List<User.Role> allUsers = List.of(User.Role.ACTIVE, User.Role.INACTIVE);
+        return userRepository.findByRoleIn(allUsers);
     }
 }
