@@ -1,6 +1,5 @@
-package club.sdcs.discordbot.discord.command.prefix.general;
+package club.sdcs.discordbot.discord.command.prefix;
 
-import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
 import club.sdcs.discordbot.model.User;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.object.entity.Message;

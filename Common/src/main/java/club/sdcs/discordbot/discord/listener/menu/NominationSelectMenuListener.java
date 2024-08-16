@@ -1,6 +1,6 @@
 package club.sdcs.discordbot.discord.listener.menu;
 
-import club.sdcs.discordbot.discord.EventListener;
+import club.sdcs.discordbot.discord.listener.EventListener;
 import club.sdcs.discordbot.model.Nomination;
 import club.sdcs.discordbot.service.NominationService;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;

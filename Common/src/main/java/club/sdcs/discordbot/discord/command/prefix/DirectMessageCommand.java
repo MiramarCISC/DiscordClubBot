@@ -1,6 +1,5 @@
-package club.sdcs.discordbot.discord.command.prefix.general;
+package club.sdcs.discordbot.discord.command.prefix;
 
-import club.sdcs.discordbot.discord.command.prefix.PrefixCommand;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.MessageCreateSpec;
 import org.springframework.stereotype.Component;

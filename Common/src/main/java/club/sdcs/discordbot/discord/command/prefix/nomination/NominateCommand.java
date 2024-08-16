@@ -220,7 +220,8 @@ public class NominateCommand implements PrefixCommand {
                     null, // joinDate
                     false, // subscribedToEmails
                     false, // subscribedToSMS
-                    club.sdcs.discordbot.model.User.Role.ACTIVE // role
+                    club.sdcs.discordbot.model.User.Role.ACTIVE, // role
+                    club.sdcs.discordbot.model.User.Status.REGISTERED
             );
             userService.addUser(newUserNominee);
         }
@@ -235,7 +236,8 @@ public class NominateCommand implements PrefixCommand {
                     null, // joinDate
                     false, // subscribedToEmails
                     false, // subscribedToSMS
-                    club.sdcs.discordbot.model.User.Role.ACTIVE // role
+                    club.sdcs.discordbot.model.User.Role.ACTIVE, // role
+                    club.sdcs.discordbot.model.User.Status.REGISTERED
             );
             userService.addUser(newUserNominator);
         }
