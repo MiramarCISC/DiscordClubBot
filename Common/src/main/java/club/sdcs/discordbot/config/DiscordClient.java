@@ -35,6 +35,7 @@ public class DiscordClient {
                 .build()
                 .gateway()
                 .setEnabledIntents(IntentSet.all())
+                //.setEnabledIntents(IntentSet.nonPrivileged().or(IntentSet.of(Intent.MESSAGE_CONTENT)))
                 .login()
                 .block();
 

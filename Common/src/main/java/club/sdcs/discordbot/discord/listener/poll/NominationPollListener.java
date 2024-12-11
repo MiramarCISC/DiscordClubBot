@@ -1,6 +1,6 @@
 package club.sdcs.discordbot.discord.listener.poll;
 
-import club.sdcs.discordbot.discord.EventListener;
+import club.sdcs.discordbot.discord.listener.EventListener;
 import club.sdcs.discordbot.service.NominationService;
 import club.sdcs.discordbot.service.UserService;
 import discord4j.core.event.domain.poll.PollVoteEvent;
