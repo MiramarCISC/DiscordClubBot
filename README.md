@@ -21,6 +21,7 @@
 # Required environment variables to run and test
 DISCORD_TOKEN - get from https://discord.com/developers/applications
 DISCORD_SERVER_ID - get from Discord client
+DISCORD_CHANNEL_ID - the #officers text channel id
 
 # How to compile and build executable jar
 mvn clean install spring-boot:repackage
@@ -62,3 +63,39 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
 3. lowercase first letter of object names
 4. Singular class names
 5. Plural database table names
+
+# Supported commands
+## MembershipBot
+### Prefixes
+| Command | Description | Example |
+| --- | --- | --- |
+| !user list | Lists all users | |
+| !user info | Gets user information | |
+| !user edit | Edit user information | |
+
+### Slash
+| Command     | Description | Example |
+|-------------| --- | --- |
+| /membership | Start registration | |
+
+## MeetingBot
+### Prefix
+| Command      | Description                                                                   | Example                |
+|--------------|-------------------------------------------------------------------------------|------------------------|
+| !meeting list | Lists detail of all active and scheduled meetings.                            |                        |
+| !meeting log | Gets log of all members who attended a specific meeting.                      | !meeting log [meeting_id] |
+| !meeting show | Shows details of a specific meeting.                                          | !meeting show [meeting_id] |
+| !meeting remind | Manually sends meeting reminders.                                             ||
+| !meeting id | Lists IDs of meetings completed, scheduled, or active.                        ||
+| !meeting link | Lists all active and scheduled meetings with their agenda and minutes links.  ||
+| !motion | Motions vote on meeting or minutes. ||
+| !nominate | Nominate an active user (required second) for officer position. | !nominate <@user> [role] |
+| !nominate list | Lists the list of nominated users & respected roles ||
+| !nominate drop | Drops nomination of user. Can only be done by nominee themselves (& select roles) ||
+
+### Slash
+| Command      | Description                                                                   | Example                |
+|--------------|-------------------------------------------------------------------------------|------------------------|
+|/rollcall | Starts a roll call poll for the current active meeting ||
+
+

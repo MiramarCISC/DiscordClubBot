@@ -2,6 +2,7 @@ package club.sdcs.discordbot.discord.command.slash.membership;
 
 import club.sdcs.discordbot.model.User;
 
+// TODO: move data validation to Common
 public class InformationProcessor {
 
     private final ValidityChecker validityChecker = new ValidityChecker();

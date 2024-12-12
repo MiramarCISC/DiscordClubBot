@@ -32,7 +32,7 @@ public class NominateListCommand implements PrefixCommand {
 
     @Override
     public String getDescription() {
-        return "Lists the list of nominated users & respected roles";
+        return "Lists the list of nominated users & respected roles.";
     }
 
     @Override

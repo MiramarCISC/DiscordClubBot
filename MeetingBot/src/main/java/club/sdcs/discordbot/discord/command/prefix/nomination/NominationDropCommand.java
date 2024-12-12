@@ -27,7 +27,7 @@ public class NominationDropCommand implements PrefixCommand {
 
     @Override
     public String getDescription() {
-        return "Drops nomination of user. Can only be done by nominee themselves (& select roles)";
+        return "Drops nomination of user. Can only be done by nominee themselves (& select roles).";
     }
 
     @Override

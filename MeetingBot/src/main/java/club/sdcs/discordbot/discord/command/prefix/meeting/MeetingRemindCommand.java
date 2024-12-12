@@ -21,7 +21,7 @@ public class MeetingRemindCommand implements PrefixCommand {
 
     @Override
     public String getDescription() {
-        return "Manually sends meeting reminders";
+        return "Manually sends meeting reminders.";
     }
 
     @Override

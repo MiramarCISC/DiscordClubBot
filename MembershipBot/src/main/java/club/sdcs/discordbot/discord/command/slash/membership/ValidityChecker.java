@@ -2,6 +2,7 @@ package club.sdcs.discordbot.discord.command.slash.membership;
 
 import java.util.regex.Pattern;
 
+// TODO: use a library for this and move to Common
 public class ValidityChecker {
 
     /**
