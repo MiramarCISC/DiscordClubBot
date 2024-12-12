@@ -19,9 +19,12 @@
 - SdcsDiscordBotApplication - the main class
 
 # Required environment variables to run and test
-DISCORD_TOKEN - get from https://discord.com/developers/applications
+DISCORD_TOKEN - get from https://discord.com/developers/applications (Each bot needs to be a separate application with different token)
 DISCORD_SERVER_ID - get from Discord client
 DISCORD_CHANNEL_ID - the #officers text channel id
+
+# Bot user server permissions required 
+1. Administrator (TODO: tighten security)
 
 # How to compile and build executable jar
 mvn clean install spring-boot:repackage
