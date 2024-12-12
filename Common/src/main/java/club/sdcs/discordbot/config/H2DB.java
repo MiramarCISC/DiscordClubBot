@@ -13,9 +13,9 @@ public class H2DB {
     @Value("${spring.h2.port}")
     private int port;
 
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public Server inMemoryH2DatabaseaServer() throws SQLException {
-        return Server.createTcpServer(
-                "-tcp", "-tcpAllowOthers", "-tcpPort", Integer.toString(port), "-ifNotExists");
-    }
+//    @Bean(initMethod = "start", destroyMethod = "stop")
+//    public Server inMemoryH2DatabaseaServer() throws SQLException {
+//        return Server.createTcpServer(
+//                "-tcp", "-tcpAllowOthers", "-tcpPort", Integer.toString(port), "-ifNotExists");
+//    }
 }

@@ -26,7 +26,7 @@ public class NominateCommand implements PrefixCommand {
     private final NominationService nominationService;
     private final int DELAY_MINUTES = 60;
 
-    @Value("${spring.discord.img-url}")
+    @Value("${spring.discord.self-nomination.img-url}")
     private String IMG_URL;
 
     public NominateCommand(UserService userService, NominationService nominationService) {
