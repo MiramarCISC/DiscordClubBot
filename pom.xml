@@ -69,7 +69,40 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- https://bitbucket.org/atlassian/maven-jgitflow-plugin/wiki/Home -->
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>1.0-m5.1</version>
+                <configuration>
+                    <noDeploy>true</noDeploy>
+                    <!-- Allows untracked files -->
+                    <allowUntracked>true</allowUntracked>
+                    <!-- Enable this to push to origin using SSH keys -->
+                    <enableSshAgent>true</enableSshAgent>
+                    <!-- Keep your maven submodules at the same version as the parent POM -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!--
+                      Pushing in-development features to origin allows all devs to see what each other
+                      are working on
+                    -->
+                    <pushFeatures>true</pushFeatures>
+                    <!--
+                      This allows the CI server (e.g. Jenkins) to automatically push new releases to
+                      origin; you can then either manually deploy them or, if you are doing Continuous
+                      Deployments, auto-deploy them to prod
+                    -->
+                    <pushReleases>true</pushReleases>
+                    <!--
+                      Hot Fixes should be pushed to origin as well so that any dev can pick them up
+                    -->
+                    <pushHotfixes>true</pushHotfixes>
+                    <flowInitContext>
+                        <masterBranchName>master</masterBranchName>
+                        <developBranchName>development</developBranchName>
+                    </flowInitContext>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>

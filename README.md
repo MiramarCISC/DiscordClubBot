@@ -60,6 +60,12 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
 10. Push your changes.
 11. Create a pull request onto development.
 
+# How to create a release
+1. Merge development branch with master
+2. Checkout development branch
+3. mvn jgitflow:release-start
+4. mvn jgitflow:release-finish
+
 # Code syntax standards
 1. camelCase classes and variables
 2. Capitalize class names
