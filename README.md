@@ -7,6 +7,9 @@
 2. Spring JPA
 3. H2 SQL Database
 4. discord4j (version: 3.2.7-SNAPSHOT required for Polls, released version does not include)
+   1. Clone and checkout the 3.2.x branch: https://github.com/Discord4J/Discord4J
+   2. ./gradew publishToMavenLocal
+   3. Update this project's pom.xml Discord4j with the SNAPSHOT version published
 5. flyway db version management
 
 # Folder Structure
@@ -59,6 +62,14 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
 9. Commit your changes.
 10. Push your changes.
 11. Create a pull request onto development.
+
+# How to create a release
+1. Make sure JAVA_HOME environment variable matches the jdk you are using to build and run your project.
+2. Merge development branch with master
+3. Checkout development branch
+4. Note that latest jgitflow plugin is compiled with old ssl libs so it cannot communicate with github over ssh, so you must use https with your github username and github personal access token
+5. mvn jgitflow:release-start -DreleaseVersion=1.0.0 -DdevelopmentVersion=1.0.1-SNAPSHOT -Dusername=$GITUSER -Dpassword$GITTOKEN
+6. mvn jgitflow:release-finish
 
 # Code syntax standards
 1. camelCase classes and variables
