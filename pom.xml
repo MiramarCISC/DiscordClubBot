@@ -77,6 +77,7 @@
                 <configuration>
                     <noDeploy>true</noDeploy>
                     <allowUntracked>true</allowUntracked>
+                    <allowSnapshots>true</allowSnapshots>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <pushFeatures>true</pushFeatures>
                     <pushReleases>true</pushReleases>
