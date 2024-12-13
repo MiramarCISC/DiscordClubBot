@@ -27,7 +27,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop  # once db schema is stabilized, switch to update and use flyway to version schema
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
