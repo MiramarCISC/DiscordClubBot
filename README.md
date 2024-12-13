@@ -6,7 +6,7 @@
 1. Spring Boot 3
 2. Spring JPA
 3. H2 SQL Database
-4. discord4j (version: 3.2.7-SNAPSHOT)
+4. discord4j (version: 3.2.7)
 5. flyway db version management
 
 # Folder Structure

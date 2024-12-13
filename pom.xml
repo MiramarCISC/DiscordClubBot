@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.discord4j</groupId>
             <artifactId>discord4j-core</artifactId>
-            <version>3.2.7-SNAPSHOT</version>
+            <version>3.2.7</version>
         </dependency>
     </dependencies>
 
