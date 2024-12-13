@@ -11,8 +11,14 @@
     <groupId>club.sdcs</groupId>
     <artifactId>DiscordClubBot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>SDCSDiscordBot</name>
     <description>SDCSDiscordBot</description>
+    <modules>
+        <module>Common</module>
+        <module>MeetingBot</module>
+        <module>MembershipBot</module>
+    </modules>
     <properties>
         <java.version>21</java.version>
     </properties>
@@ -46,7 +52,7 @@
         <dependency>
             <groupId>com.discord4j</groupId>
             <artifactId>discord4j-core</artifactId>
-            <version>3.2.6</version>
+            <version>3.2.7-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
