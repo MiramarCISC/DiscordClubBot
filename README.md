@@ -7,6 +7,9 @@
 2. Spring JPA
 3. H2 SQL Database
 4. discord4j (version: 3.2.7-SNAPSHOT required for Polls, released version does not include)
+   1. Clone and checkout the 3.2.x branch: https://github.com/Discord4J/Discord4J
+   2. ./gradew publishToMavenLocal
+   3. Update this project's pom.xml Discord4j with the SNAPSHOT version published
 5. flyway db version management
 
 # Folder Structure
