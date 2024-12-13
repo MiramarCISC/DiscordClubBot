@@ -19,7 +19,7 @@ spring:
         num-meetings-attended: 1
         in-past-num-days: 30
     self-nomination:
-      img-url: https://upload.wikimedia.org/wikipedia/commons/4/42/Shrug.jpg
+      img-url: https://i.imgflip.com/1hhv9m.jpg?a478296
   h2:
     console:
       enabled: true
