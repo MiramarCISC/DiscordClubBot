@@ -77,7 +77,6 @@
                 <configuration>
                     <noDeploy>true</noDeploy>
                     <allowUntracked>true</allowUntracked>
-                    <enableSshAgent>true</enableSshAgent>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <pushFeatures>true</pushFeatures>
                     <pushReleases>true</pushReleases>
