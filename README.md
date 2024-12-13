@@ -69,7 +69,7 @@ Or using IntelliJ, just press the green Play button next to DiscordClubBotApplic
 3. Checkout development branch
 4. Note that latest jgitflow plugin is compiled with old ssl libs so it cannot communicate with github over ssh, so you must use https with your github username and github personal access token
 5. mvn jgitflow:release-start -DreleaseVersion=1.0.0 -DdevelopmentVersion=1.0.1-SNAPSHOT -Dusername=$GITUSER -Dpassword$GITTOKEN
-6. mvn jgitflow:release-finish
+6. mvn jgitflow:release-finish  -Dusername=$GITUSER -Dpassword$GITTOKEN
 
 # Code syntax standards
 1. camelCase classes and variables
